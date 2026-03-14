@@ -42,23 +42,45 @@ interface Message {
 const ParticleBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {[...Array(20)].map((_, i) => (
+      <div className="absolute inset-0 grid-pattern opacity-20" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-doulia-turquoise/10 rounded-full blur-[120px] animate-float" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-doulia-violet/10 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-5s' }} />
+      {[...Array(15)].map((_, i) => (
         <div
           key={i}
           className="particle"
           style={{
-            width: Math.random() * 4 + 'px',
-            height: Math.random() * 4 + 'px',
+            width: Math.random() * 2 + 'px',
+            height: Math.random() * 2 + 'px',
             left: Math.random() * 100 + '%',
             top: Math.random() * 100 + '%',
             animationDuration: Math.random() * 10 + 10 + 's',
             animationDelay: Math.random() * 5 + 's',
-            opacity: Math.random() * 0.5
+            opacity: Math.random() * 0.3
           }}
         />
       ))}
     </div>
   );
+};
+
+const Typewriter = ({ text, onComplete }: { text: string; onComplete?: () => void }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 15); // Adjust speed here
+      return () => clearTimeout(timeout);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }, [currentIndex, text, onComplete]);
+
+  return <>{displayedText}</>;
 };
 
 export default function App() {
@@ -77,10 +99,24 @@ export default function App() {
   const [resumeCode, setResumeCode] = useState<string | null>(null);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
   const typeformId = "xe2vUwE1";
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+      
+      const target = e.target as HTMLElement;
+      const isButton = target.closest('button') || target.closest('a');
+      setIsHovering(!!isButton);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -182,8 +218,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-x-hidden">
-      <div className="fixed inset-0 grid-pattern pointer-events-none opacity-40 z-0" />
+    <div className="min-h-screen bg-doulia-night text-white flex flex-col font-sans relative overflow-x-hidden">
+      <div 
+        className={cn("cursor-glow", isHovering && "active")} 
+        style={{ left: cursorPos.x, top: cursorPos.y }} 
+      />
+      <div className="fixed inset-0 grid-pattern pointer-events-none opacity-20 z-0" />
       <div className="scanline" />
       <ParticleBackground />
       
@@ -431,8 +471,8 @@ export default function App() {
                 <div className={cn(
                   "p-5 rounded-[1.5rem] text-base leading-relaxed shadow-2xl transition-all duration-300",
                   msg.role === 'user' 
-                    ? "bg-white/10 text-white rounded-tr-none border border-white/10" 
-                    : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md hover:bg-white/[0.05]"
+                    ? "bg-gradient-to-br from-doulia-violet to-doulia-turquoise text-white rounded-tr-none border border-white/20 shadow-[0_0_20px_rgba(0,240,255,0.2)]" 
+                    : "bg-doulia-dark/80 text-white/90 border border-doulia-turquoise/20 rounded-tl-none backdrop-blur-[12px] hover:bg-doulia-dark/90 shadow-[inset_0_0_15px_rgba(0,240,255,0.05)]"
                 )}>
                   <div className="markdown-body">
                     <ReactMarkdown
@@ -453,6 +493,12 @@ export default function App() {
                               return node;
                             });
                           };
+                          
+                          // Only use Typewriter for the last model message
+                          if (msg.role === 'model' && i === messages.length - 1 && !isLoading) {
+                            return <p><Typewriter text={children as string} onComplete={scrollToBottom} /></p>;
+                          }
+                          
                           return <p>{processBubbles(children)}</p>;
                         },
                         li: ({ children }) => {
@@ -494,18 +540,18 @@ export default function App() {
                               rel="noopener noreferrer"
                               onClick={handleClick}
                               className={cn(
-                                "inline-flex items-center gap-3 px-6 py-3 rounded-2xl font-bold text-sm transition-all my-3 group/link no-underline shadow-lg",
+                                "inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-sm transition-all my-4 group/link no-underline shadow-xl w-full sm:w-auto",
                                 isWhatsApp 
-                                  ? "bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-[#25D366]/20" 
+                                  ? "bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-[#25D366]/30 border border-[#25D366]/50" 
                                   : isTypeform
-                                    ? "bg-doulia-turquoise hover:bg-doulia-turquoise/80 text-doulia-night shadow-doulia-turquoise/20"
+                                    ? "bg-gradient-to-r from-doulia-violet to-doulia-turquoise hover:scale-[1.02] text-white shadow-doulia-turquoise/30 border border-white/20"
                                     : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
                               )}
                             >
-                              {isWhatsApp && <Phone size={16} />}
-                              {isTypeform && <Activity size={16} />}
-                              {children}
-                              <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
+                              {isWhatsApp && <Phone size={18} />}
+                              {isTypeform && <Activity size={18} />}
+                              <span className="tracking-wide uppercase text-[11px]">{children}</span>
+                              <ArrowRight size={18} className="group-hover/link:translate-x-1 transition-transform" />
                             </a>
                           );
                         }

@@ -5,26 +5,44 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
   
-  --color-doulia-night: #020408;
-  --color-doulia-dark: #050a10;
-  --color-doulia-turquoise: #00FFFF;
-  --color-doulia-violet: #8B5CF6;
-  --color-doulia-blue: #1e3a8a;
+  --color-doulia-night: #030712;
+  --color-doulia-dark: #000000;
+  --color-doulia-turquoise: #00F0FF;
+  --color-doulia-violet: #1E40AF;
+  --color-doulia-blue: #1E40AF;
 }
 
 @layer base {
   body {
-    @apply bg-doulia-night text-white font-sans overflow-x-hidden;
+    @apply bg-doulia-night text-white font-sans overflow-x-hidden cursor-default;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/[0.02] backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+    @apply bg-white/[0.03] backdrop-blur-[12px] border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
   }
   
   .glow-neon {
-    @apply shadow-[0_0_30px_rgba(0,255,255,0.2),0_0_60px_rgba(139,92,246,0.1)];
+    @apply shadow-[0_0_20px_rgba(0,240,255,0.15),inset_0_0_20px_rgba(0,240,255,0.05)];
+  }
+
+  .cursor-glow {
+    pointer-events: none;
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  }
+
+  .cursor-glow.active {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
   }
 
   .text-gradient {
