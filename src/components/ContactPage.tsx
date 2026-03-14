@@ -110,7 +110,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-              {/* 1 - Site Web mis à jour */}
+              {/* Site Web */}
               <a 
                 href="https://douliacameroun-825a6.web.app/" 
                 target="_blank" 
@@ -121,10 +121,10 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                   <Globe size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.website}</p>
-                <p className="text-[9px] md:text-xs text-white/40">douliacameroun-825a6.web.app</p>
+                <p className="text-[9px] md:text-xs text-white/40">www.doulia.cm</p>
               </a>
 
-              {/* 2 - Email mis à jour */}
+              {/* Email */}
               <a 
                 href="mailto:douliacameroun@gmail.com"
                 className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
@@ -133,10 +133,10 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                   <Mail size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.email}</p>
-                <p className="text-[9px] md:text-xs text-white/40">douliacameroun@gmail.com</p>
+                <p className="text-[9px] md:text-xs text-white/40">contact@doulia.cm</p>
               </a>
 
-              {/* 3 - LinkedIn mis à jour */}
+              {/* LinkedIn */}
               <a 
                 href="https://www.linkedin.com/company/doulia/"
                 target="_blank"
@@ -150,7 +150,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                 <p className="text-[9px] md:text-xs text-white/40">Doulia</p>
               </a>
 
-              {/* 4 - Facebook mis à jour */}
+              {/* Facebook */}
               <a 
                 href="https://web.facebook.com/profile.php?id=61583620293750&locale=fr_FR"
                 target="_blank"
@@ -161,7 +161,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                   <Facebook size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.facebook}</p>
-                <p className="text-[9px] md:text-xs text-white/40">Doulia Cameroon</p>
+                <p className="text-[9px] md:text-xs text-white/40">Doulia</p>
               </a>
             </div>
 

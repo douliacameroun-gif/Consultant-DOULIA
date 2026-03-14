@@ -52,20 +52,20 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
             {/* Pack 1 */}
             <motion.article 
               whileHover={{ y: -10 }}
-              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/30 transition-all flex flex-col"
+              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/50 hover:bg-white/5 active:bg-white/5 active:border-doulia-lime/50 transition-all duration-300 flex flex-col"
             >
               <div className="h-56 overflow-hidden relative">
                 <img 
                   src="https://i.postimg.cc/kX1fmzXD/Doulia_Connect.jpg" 
                   alt="Doulia Connect" 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:brightness-125 group-active:grayscale-0 group-active:opacity-100 group-active:brightness-125 transition-all duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night to-transparent opacity-60"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 group-hover:opacity-40 group-active:opacity-40 transition-opacity duration-500"></div>
               </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2">1. DOULIA Connect</h3>
-                <p className="text-white/40 italic mb-6 text-sm">Le service client qui ne dort jamais.</p>
+              <div className="p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
+                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2 drop-shadow-lg">1. DOULIA Connect</h3>
+                <p className="text-white/60 italic mb-6 text-sm">Le service client qui ne dort jamais.</p>
                 <ul className="space-y-4 mb-8">
                   {[
                     { label: "Automatisation 24/7", desc: "Assistants WhatsApp & Web intelligents." },
@@ -75,13 +75,13 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   ].map((item, i) => (
                     <li key={i} className="flex gap-3 text-sm">
                       <ChevronRight size={16} className="text-doulia-lime shrink-0" />
-                      <p><span className="font-bold text-white/90">{item.label} :</span> <span className="text-white/50">{item.desc}</span></p>
+                      <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                     </li>
                   ))}
                 </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Connect")}
-                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn shadow-[0_0_15px_rgba(190,242,100,0.1)] group-hover:shadow-[0_0_20px_rgba(190,242,100,0.3)]"
                 >
                   En savoir plus ?
                   <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -92,20 +92,20 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
             {/* Pack 2 */}
             <motion.article 
               whileHover={{ y: -10 }}
-              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/30 transition-all flex flex-col"
+              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/50 hover:bg-white/5 active:bg-white/5 active:border-doulia-lime/50 transition-all duration-300 flex flex-col"
             >
               <div className="h-56 overflow-hidden relative">
                 <img 
                   src="https://i.postimg.cc/YqsfVFbS/Doulia_Process.jpg" 
                   alt="Doulia Process" 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:brightness-125 group-active:grayscale-0 group-active:opacity-100 group-active:brightness-125 transition-all duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night to-transparent opacity-60"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 group-hover:opacity-40 group-active:opacity-40 transition-opacity duration-500"></div>
               </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2">2. DOULIA Process</h3>
-                <p className="text-white/40 italic mb-6 text-sm">L'automatisation de la routine.</p>
+              <div className="p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
+                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2 drop-shadow-lg">2. DOULIA Process</h3>
+                <p className="text-white/60 italic mb-6 text-sm">L'automatisation de la routine.</p>
                 <ul className="space-y-4 mb-8">
                   {[
                     { label: "Audit Processus", desc: "Identification des goulots d'étranglement." },
@@ -115,13 +115,13 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   ].map((item, i) => (
                     <li key={i} className="flex gap-3 text-sm">
                       <ChevronRight size={16} className="text-doulia-lime shrink-0" />
-                      <p><span className="font-bold text-white/90">{item.label} :</span> <span className="text-white/50">{item.desc}</span></p>
+                      <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                     </li>
                   ))}
                 </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Process")}
-                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn shadow-[0_0_15px_rgba(190,242,100,0.1)] group-hover:shadow-[0_0_20px_rgba(190,242,100,0.3)]"
                 >
                   En savoir plus ?
                   <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -132,20 +132,20 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
             {/* Pack 3 */}
             <motion.article 
               whileHover={{ y: -10 }}
-              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/30 transition-all flex flex-col"
+              className="glass-panel rounded-3xl overflow-hidden group border-white/5 hover:border-doulia-lime/50 hover:bg-white/5 active:bg-white/5 active:border-doulia-lime/50 transition-all duration-300 flex flex-col"
             >
               <div className="h-56 overflow-hidden relative">
                 <img 
                   src="https://i.postimg.cc/Wz96sqVK/Doulia_Insight.jpg" 
                   alt="Doulia Insight" 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:brightness-125 group-active:grayscale-0 group-active:opacity-100 group-active:brightness-125 transition-all duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night to-transparent opacity-60"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 group-hover:opacity-40 group-active:opacity-40 transition-opacity duration-500"></div>
               </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2">3. DOULIA Insight</h3>
-                <p className="text-white/40 italic mb-6 text-sm">Décisions basées sur la donnée.</p>
+              <div className="p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
+                <h3 className="text-2xl font-display font-bold text-doulia-lime mb-2 drop-shadow-lg">3. DOULIA Insight</h3>
+                <p className="text-white/60 italic mb-6 text-sm">Décisions basées sur la donnée.</p>
                 <ul className="space-y-4 mb-8">
                   {[
                     { label: "Data Mining", desc: "Valorisation des fichiers Excel dormants." },
@@ -155,13 +155,13 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   ].map((item, i) => (
                     <li key={i} className="flex gap-3 text-sm">
                       <ChevronRight size={16} className="text-doulia-lime shrink-0" />
-                      <p><span className="font-bold text-white/90">{item.label} :</span> <span className="text-white/50">{item.desc}</span></p>
+                      <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                     </li>
                   ))}
                 </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Insight")}
-                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="mt-auto w-full py-4 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-2xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn shadow-[0_0_15px_rgba(190,242,100,0.1)] group-hover:shadow-[0_0_20px_rgba(190,242,100,0.3)]"
                 >
                   En savoir plus ?
                   <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
