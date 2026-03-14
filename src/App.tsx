@@ -3,20 +3,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Mic,
   Send, 
-  Bot, 
   User, 
-  MessageSquare, 
-  Sparkles, 
   ArrowRight, 
   Phone, 
-  Mail, 
-  Globe,
-  CheckCircle2,
   Menu,
   X,
   Zap,
   Shield,
-  BarChart3,
   ClipboardList,
   Cpu,
   Activity,
@@ -222,33 +215,30 @@ export default function App() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col h-[calc(100vh-2rem)] glass-panel sm:rounded-[2.5rem] overflow-hidden relative glow-neon"
         >
-          {/* Chat Header */}
-          <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
+          {/* Chat Header Allégé et Organisé */}
+          <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 overflow-hidden">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
                   <img 
-                    src="https://i.postimg.cc/Z5cbrHQb/LOGO_DOULIA.png" 
+                    src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
-                    className="w-10 h-10 object-contain filter drop-shadow-[0_0_8px_rgba(190,242,100,0.5)]"
+                    className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold text-lg text-white tracking-tight">DOULIA</span>
-                  <span className="text-[10px] text-doulia-lime font-bold uppercase tracking-widest bg-doulia-lime/10 px-2 py-0.5 rounded-md">IA Expert</span>
-                </div>
+              <div className="flex flex-col justify-center">
+                <span className="font-display font-bold text-lg text-white tracking-tight leading-none mb-1">DOULIA</span>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1 h-1 bg-doulia-lime rounded-full animate-pulse"></div>
-                  <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest">Système Actif • Douala</p>
+                  <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
                 </div>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button 
                 onClick={() => setShowSolutions(true)}
                 className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
@@ -261,37 +251,31 @@ export default function App() {
               >
                 Contact
               </button>
+              
+              {/* Bouton Audit mis en perspective (Call to Action) */}
               <button 
                 onClick={() => openAudit()}
-                className="flex text-[11px] font-bold text-doulia-night bg-gradient-to-r from-doulia-lime to-doulia-accent-blue px-4 py-2 rounded-xl hover:scale-105 transition-all shadow-[0_0_15px_rgba(190,242,100,0.3)] items-center gap-2 active:scale-95"
+                className="flex text-[11px] sm:text-xs font-black text-doulia-night bg-doulia-lime px-4 py-2 rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.4)] items-center gap-1.5 active:scale-95 animate-[pulse_3s_ease-in-out_infinite]"
               >
-                <Activity size={14} />
+                <Activity size={14} className="animate-bounce" />
                 <span className="hidden xs:inline">Audit IA</span>
                 <span className="xs:hidden">Audit</span>
               </button>
 
-              <button 
-                onClick={clearHistory}
-                title="Effacer l'historique"
-                className="p-2 text-white/40 hover:text-red-400 transition-colors rounded-lg hover:bg-white/5"
-              >
-                <Trash2 size={18} />
-              </button>
-              
-              <button className="sm:hidden p-2 text-white/60" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <button className="sm:hidden p-1 text-white/80" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
               </button>
             </div>
           </div>
 
-          {/* Mobile Navigation Overlay - CORRIGÉ POUR LA LISIBILITÉ */}
+          {/* Mobile Navigation Overlay */}
           <AnimatePresence>
             {isMenuOpen && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                className="sm:hidden absolute top-24 left-4 right-4 z-[100] bg-doulia-night/98 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+                className="sm:hidden absolute top-20 left-4 right-4 z-[100] bg-doulia-night/98 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
               >
                 <div className="flex flex-col gap-3">
                   <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-2 ml-2">Navigation</div>
@@ -317,8 +301,19 @@ export default function App() {
                     <span className="flex-1">Contact & Support</span>
                     <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
+                  
+                  {/* Bouton Effacer Historique déplacé dans le menu */}
+                  <button 
+                    onClick={() => { clearHistory(); setIsMenuOpen(false); }}
+                    className="w-full text-left p-4 text-sm font-bold text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 rounded-2xl transition-all flex items-center gap-4"
+                  >
+                    <div className="p-2 bg-red-500/10 rounded-lg">
+                      <Trash2 size={20} />
+                    </div>
+                    <span className="flex-1">Effacer l'historique</span>
+                  </button>
 
-                  <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                  <div className="mt-2 pt-4 border-t border-white/10 flex justify-between items-center">
                     <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest">© DOULIA 2026</p>
                     <button 
                       onClick={() => setIsMenuOpen(false)}
@@ -333,24 +328,24 @@ export default function App() {
           </AnimatePresence>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8 scrollbar-hide">
             {messages.map((msg, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                  "flex gap-4 max-w-[90%] sm:max-w-[80%]",
+                  "flex gap-3 sm:gap-4 max-w-[95%] sm:max-w-[80%]",
                   msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                 )}
               >
                 <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border overflow-hidden",
+                  "w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden",
                   msg.role === 'user' 
-                    ? "bg-white/5 border-white/10 text-white/70" 
-                    : "bg-white border-none"
+                    ? "bg-white/5 border border-white/10 text-white/70" 
+                    : "bg-white"
                 )}>
-                  {msg.role === 'user' ? <User size={20} /> : (
+                  {msg.role === 'user' ? <User size={18} /> : (
                     <img 
                       src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                       alt="DOULIA" 
@@ -360,10 +355,10 @@ export default function App() {
                   )}
                 </div>
                 <div className={cn(
-                  "p-5 rounded-[1.5rem] text-base leading-relaxed shadow-2xl transition-all duration-300",
+                  "p-4 sm:p-5 rounded-[1.5rem] text-sm sm:text-base leading-relaxed shadow-lg transition-all duration-300",
                   msg.role === 'user' 
                     ? "bg-white/10 text-white rounded-tr-none border border-white/10" 
-                    : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md hover:bg-white/[0.05]"
+                    : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md"
                 )}>
                   <div className="markdown-body">
                     <ReactMarkdown
@@ -375,7 +370,7 @@ export default function App() {
                                 const parts = node.split(/([❶-❿])/g);
                                 return parts.map((part, i) => 
                                   /[❶-❿]/.test(part) ? (
-                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-125">
+                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-110 sm:scale-125">
                                       {part}
                                     </span>
                                   ) : part
@@ -393,7 +388,7 @@ export default function App() {
                                 const parts = node.split(/([❶-❿])/g);
                                 return parts.map((part, i) => 
                                   /[❶-❿]/.test(part) ? (
-                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-125">
+                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-110 sm:scale-125">
                                       {part}
                                     </span>
                                   ) : part
@@ -424,18 +419,18 @@ export default function App() {
                               rel="noopener noreferrer"
                               onClick={handleClick}
                               className={cn(
-                                "inline-flex items-center gap-3 px-6 py-3 rounded-2xl font-bold text-sm transition-all my-3 group/link no-underline shadow-lg",
+                                "inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all my-2 sm:my-3 group/link no-underline",
                                 isWhatsApp 
-                                  ? "bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-[#25D366]/20" 
+                                  ? "bg-[#25D366] text-white" 
                                   : isTypeform
-                                    ? "bg-doulia-lime hover:bg-doulia-lime/80 text-doulia-night shadow-doulia-lime/20"
-                                    : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                                    ? "bg-doulia-lime text-doulia-night"
+                                    : "bg-white/10 text-white border border-white/10"
                               )}
                             >
-                              {isWhatsApp && <Phone size={16} />}
-                              {isTypeform && <Activity size={16} />}
+                              {isWhatsApp && <Phone size={14} />}
+                              {isTypeform && <Activity size={14} />}
                               {children}
-                              <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
+                              <ArrowRight size={14} />
                             </a>
                           );
                         }
@@ -447,62 +442,36 @@ export default function App() {
                 </div>
               </motion.div>
             ))}
+            
+            {/* Animation de chargement fixe, sobre et sans effets parasites */}
             {isLoading && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                className="flex gap-4 mr-auto"
-              >
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                  <div className="absolute inset-0 bg-doulia-lime/20 animate-pulse" />
+              <div className="flex gap-3 sm:gap-4 mr-auto">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden">
                   <img 
                     src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
-                    className="w-full h-full object-cover relative z-10"
+                    className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="bg-white/5 border border-white/10 p-5 rounded-[1.5rem] rounded-tl-none shadow-2xl backdrop-blur-md relative overflow-hidden group">
-                  <div className="absolute inset-0 shimmer opacity-30" />
-                  <div className="flex flex-col gap-2 relative z-10">
-                    <div className="flex items-center gap-2">
-                      <Cpu size={12} className="text-doulia-lime animate-spin-slow" />
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-doulia-lime animate-pulse">
-                        DOULIA analyse votre demande...
-                      </span>
-                    </div>
-                    <div className="flex gap-1.5">
-                      {[0, 1, 2].map(i => (
-                        <motion.div
-                          key={i}
-                          animate={{ 
-                            scale: [1, 1.4, 1], 
-                            opacity: [0.3, 1, 0.3],
-                            backgroundColor: i === 1 ? ["#bef264", "#a3ff33", "#bef264"] : "#bef264"
-                          }}
-                          transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
-                          className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(190,242,100,0.5)]"
-                        />
-                      ))}
-                    </div>
-                  </div>
+                <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-[1.5rem] rounded-tl-none flex items-center h-auto sm:h-10">
+                  <span className="text-xs text-white/50 italic">DOULIA analyse votre demande...</span>
                 </div>
-              </motion.div>
+              </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <div className="p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
+          {/* Input Area - Placeholder sur une seule ligne */}
+          <div className="p-3 sm:p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
             <div className="relative flex items-end gap-2">
               <div className="flex-1 relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-doulia-lime/20 to-doulia-accent-blue/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                 <textarea
                   value={input}
                   onChange={(e) => {
                     setInput(e.target.value);
                     e.target.style.height = 'auto';
-                    e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 150)}px`;
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -512,7 +481,7 @@ export default function App() {
                   }}
                   placeholder="Posez votre question à DOULIA..."
                   rows={1}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-doulia-lime/50 transition-all relative z-10 resize-none min-h-[44px] max-h-[200px] overflow-y-auto"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-3 text-[13px] sm:text-sm text-white placeholder:text-white/30 placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis focus:outline-none focus:border-doulia-lime/50 transition-all resize-none min-h-[44px] max-h-[150px] overflow-y-auto"
                   disabled={isLoading}
                 />
               </div>
@@ -521,30 +490,22 @@ export default function App() {
                   onClick={toggleListening}
                   disabled={isLoading}
                   className={cn(
-                    "p-3 rounded-xl transition-all relative z-10 border border-white/10",
+                    "p-3 rounded-xl transition-all border border-white/10",
                     isListening 
-                      ? "bg-doulia-lime text-doulia-night shadow-[0_0_20px_rgba(190,242,100,0.4)]" 
+                      ? "bg-doulia-lime text-doulia-night" 
                       : "bg-white/5 text-white/70 hover:bg-white/10"
                   )}
                 >
-                  <Mic size={20} className={cn(isListening && "animate-pulse")} />
+                  <Mic size={20} />
                 </button>
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-doulia-lime to-doulia-accent-blue text-white p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(190,242,100,0.4)] active:scale-95 relative z-10"
+                  className="bg-doulia-lime text-doulia-night p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
                 >
                   <Send size={20} />
                 </button>
               </div>
-            </div>
-            <div className="flex justify-center gap-4 mt-2">
-              <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest flex items-center gap-1.5">
-                <Shield size={8} /> Sécurisé par DOULIA
-              </p>
-              <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest flex items-center gap-1.5">
-                <Cpu size={8} /> Moteur Gemini 1.5 Flash
-              </p>
             </div>
           </div>
         </motion.div>
@@ -575,23 +536,23 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(190,242,100,0.1)] border border-white/10 relative flex flex-col gemini-border-glow"
+              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden border border-white/10 relative flex flex-col"
             >
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+              <div className="p-4 sm:p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-doulia-lime/10 rounded-xl text-doulia-lime">
-                    <ClipboardList size={24} />
+                    <ClipboardList size={20} sm:size={24} />
                   </div>
                   <div>
-                    <span className="font-display font-bold text-xl text-white block">Audit Stratégique</span>
-                    <span className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Analyse de maturité digitale</span>
+                    <span className="font-display font-bold text-lg sm:text-xl text-white block">Audit Stratégique</span>
+                    <span className="text-[9px] sm:text-[10px] text-white/40 uppercase tracking-widest font-bold">Analyse de maturité digitale</span>
                   </div>
                 </div>
                 <button 
                   onClick={() => setShowTypeform(false)}
-                  className="p-3 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
+                  className="p-2 sm:p-3 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
                 >
-                  <X size={32} />
+                  <X size={24} sm:size={32} />
                 </button>
               </div>
               <div className="flex-1 relative">
