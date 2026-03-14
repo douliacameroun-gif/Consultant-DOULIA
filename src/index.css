@@ -5,42 +5,55 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
   
-  --color-doulia-night: #05070a;
-  --color-doulia-dark: #0a1118;
-  --color-doulia-turquoise: #00f2ea;
-  --color-doulia-lime: #a3ff33;
-  --color-doulia-blue: #1e3a8a;
+  --color-doulia-night: #030712;
+  --color-doulia-dark: #000000;
+  --color-doulia-turquoise: #00F0FF;
+  --color-doulia-violet: #1E40AF;
+  --color-doulia-blue: #1E40AF;
 }
 
 @layer base {
   body {
-    @apply bg-doulia-night text-white font-sans overflow-x-hidden;
+    @apply bg-doulia-night text-white font-sans overflow-x-hidden cursor-default;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+    @apply bg-white/[0.03] backdrop-blur-[12px] border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
   }
   
-  .glow-turquoise {
-    @apply shadow-[0_0_20px_rgba(0,242,234,0.3)];
+  .glow-neon {
+    @apply shadow-[0_0_20px_rgba(0,240,255,0.15),inset_0_0_20px_rgba(0,240,255,0.05)];
   }
-  
-  .glow-lime {
-    @apply shadow-[0_0_20px_rgba(163,255,51,0.3)];
+
+  .cursor-glow {
+    pointer-events: none;
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  }
+
+  .cursor-glow.active {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-doulia-turquoise to-doulia-lime;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-doulia-turquoise via-white to-doulia-violet;
   }
 
   .bg-mesh {
     background-image: 
-      radial-gradient(at 0% 0%, rgba(0, 242, 234, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(163, 255, 51, 0.1) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.2) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(0, 242, 234, 0.1) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(0, 255, 255, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(2, 4, 8, 1) 0px, transparent 100%);
     background-attachment: fixed;
   }
 
@@ -54,8 +67,8 @@
     animation: glow-pulse-turquoise 4s ease-in-out infinite;
   }
 
-  .glow-pulse-lime {
-    animation: glow-pulse-lime 4s ease-in-out infinite;
+  .glow-pulse-violet {
+    animation: glow-pulse-violet 4s ease-in-out infinite;
   }
 
   @keyframes glow-pulse-turquoise {
@@ -63,9 +76,9 @@
     50% { filter: drop-shadow(0 0 20px rgba(0, 242, 234, 0.6)); }
   }
 
-  @keyframes glow-pulse-lime {
-    0%, 100% { filter: drop-shadow(0 0 5px rgba(163, 255, 51, 0.3)); }
-    50% { filter: drop-shadow(0 0 20px rgba(163, 255, 51, 0.6)); }
+  @keyframes glow-pulse-violet {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.3)); }
+    50% { filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.6)); }
   }
 
   .shimmer {
@@ -80,7 +93,7 @@
   }
 
   .ai-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-doulia-turquoise to-doulia-lime;
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-doulia-turquoise to-doulia-violet;
     background-size: 200% 200%;
     animation: gradient-shift 8s ease infinite;
   }
@@ -123,7 +136,7 @@
     content: '';
     position: absolute;
     inset: -1px;
-    background: linear-gradient(90deg, transparent, var(--color-doulia-turquoise), var(--color-doulia-lime), transparent);
+    background: linear-gradient(90deg, transparent, var(--color-doulia-turquoise), var(--color-doulia-violet), transparent);
     background-size: 200% 100%;
     animation: borderGlow 4s linear infinite;
     border-radius: inherit;
@@ -180,4 +193,68 @@
 
 .hover-glitch:hover {
   animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+}
+
+.gemini-border-glow {
+  position: relative;
+}
+
+.gemini-border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--color-doulia-turquoise) 15%,
+    var(--color-doulia-violet) 30%,
+    transparent 45%,
+    transparent 100%
+  );
+  border-radius: inherit;
+  animation: rotate-glow 4s linear infinite;
+  z-index: -1;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1.5px;
+}
+
+@keyframes rotate-glow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.markdown-body {
+  @apply text-sm leading-relaxed text-white/90;
+}
+
+.markdown-body p {
+  @apply mb-4 last:mb-0;
+}
+
+.markdown-body strong, 
+.markdown-body b {
+  @apply text-doulia-turquoise font-bold;
+}
+
+.markdown-body h1, 
+.markdown-body h2, 
+.markdown-body h3, 
+.markdown-body h4 {
+  @apply text-doulia-turquoise font-display font-bold mb-3 mt-6 first:mt-0;
+}
+
+.markdown-body ul, 
+.markdown-body ol {
+  @apply mb-4 ml-4 space-y-2;
+}
+
+.markdown-body li {
+  @apply list-disc;
+}
+
+.markdown-body code {
+  @apply bg-white/10 px-1.5 py-0.5 rounded text-doulia-turquoise font-mono text-xs;
 }

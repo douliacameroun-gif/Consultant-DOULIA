@@ -62,7 +62,7 @@ const AIBackground: React.FC = () => {
         const mdy = p.y - mouseRef.current.y;
         const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
         if (mDist < 150) {
-          ctx.strokeStyle = `rgba(163, 255, 51, ${0.2 * (1 - mDist / 150)})`;
+          ctx.strokeStyle = `rgba(139, 92, 246, ${0.2 * (1 - mDist / 150)})`;
           ctx.lineWidth = 0.5;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
