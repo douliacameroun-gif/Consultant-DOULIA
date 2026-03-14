@@ -1,4 +1,3 @@
-import { GoogleGenAI } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = `
 [RÔLE ET IDENTITÉ]
@@ -51,17 +50,24 @@ Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27
 `;
 
 export const getGeminiResponse = async (message: string, history: { role: "user" | "model", parts: { text: string }[] }[]) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const model = "gemini-3.1-pro-preview";
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, history }),
+    });
 
-  const chat = ai.chats.create({
-    model,
-    config: {
-      systemInstruction: SYSTEM_INSTRUCTION,
-    },
-    history: history,
-  });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Erreur lors de l\'appel à l\'API');
+    }
 
-  const result = await chat.sendMessage({ message });
-  return result.text;
+    const data = await response.json();
+    return data.text;
+  } catch (error) {
+    console.error("Erreur frontend Gemini:", error);
+    throw error;
+  }
 };

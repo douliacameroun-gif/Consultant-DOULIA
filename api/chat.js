@@ -64,7 +64,15 @@ Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27`,
     res.status(200).json({ text: result.text });
 
   } catch (error) {
-    console.error("ERREUR SDK GEMINI:", error);
-    res.status(500).json({ error: "L'IA Doulia a eu une petite interruption, réessayez dans un instant." });
+    console.error("ERREUR SDK GEMINI DETAILEE:", {
+      message: error.message,
+      stack: error.stack,
+      response: error.response?.data,
+      status: error.status
+    });
+    res.status(500).json({ 
+      error: "L'IA Doulia a eu une petite interruption.",
+      details: error.message 
+    });
   }
 }
