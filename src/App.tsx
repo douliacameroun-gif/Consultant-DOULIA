@@ -20,7 +20,8 @@ import {
   ClipboardList,
   Cpu,
   Activity,
-  Layers
+  Layers,
+  Trash2
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getGeminiResponse } from './services/gemini';
@@ -61,13 +62,27 @@ const ParticleBackground = () => {
   );
 };
 
+const STORAGE_KEY = 'doulia_chat_history';
+
 export default function App() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'model',
-      content: "Bienvenue dans l'univers __DOULIA__. Je suis votre Expert Consultant Digital. \n\n❶ Prêt à propulser votre business au Cameroun vers le futur ? \n\n❷ Parlez-moi de vos ambitions ou de vos défis actuels."
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error('Failed to parse chat history', e);
+        }
+      }
     }
-  ]);
+    return [
+      {
+        role: 'model',
+        content: "Bienvenue dans l'univers __DOULIA__. Je suis votre Expert Consultant Digital. \n\n❶ Prêt à propulser votre business au Cameroun vers le futur ? \n\n❷ Parlez-moi de vos ambitions ou de vos défis actuels."
+      }
+    ];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +138,23 @@ export default function App() {
 
   useEffect(() => {
     scrollToBottom();
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    }
   }, [messages]);
+
+  const clearHistory = () => {
+    const initialMessage: Message[] = [
+      {
+        role: 'model',
+        content: "Bienvenue dans l'univers __DOULIA__. Je suis votre Expert Consultant Digital. \n\n❶ Prêt à propulser votre business au Cameroun vers le futur ? \n\n❷ Parlez-moi de vos ambitions ou de vos défis actuels."
+      }
+    ];
+    setMessages(initialMessage);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  };
 
   const handleSend = async (customMessage?: string, isRetry = false) => {
     const userMessage = customMessage || input.trim();
@@ -251,6 +282,14 @@ export default function App() {
                 <Activity size={14} />
                 <span className="hidden xs:inline">Audit IA</span>
                 <span className="xs:hidden">Audit</span>
+              </button>
+
+              <button 
+                onClick={clearHistory}
+                title="Effacer l'historique"
+                className="p-2 text-white/40 hover:text-red-400 transition-colors rounded-lg hover:bg-white/5"
+              >
+                <Trash2 size={18} />
               </button>
               
               {/* Mobile Menu Toggle (if needed for very small screens) */}
@@ -582,23 +621,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Footer */}
-      <footer className="bg-white/5 border-t border-white/5 py-3 mt-auto relative z-10">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2 opacity-80">
-            <img 
-              src="https://i.postimg.cc/Z5cbrHQb/LOGO_DOULIA.png" 
-              alt="DOULIA" 
-              className="w-8 h-8 object-contain"
-              referrerPolicy="no-referrer"
-            />
-            <span className="font-display font-bold tracking-tighter text-lg">DOULIA</span>
-          </div>
-          <p className="text-[9px] text-white/30 font-medium tracking-widest uppercase text-center">
-            © 2026 DOULIA TECHNOLOGY • DOUALA • CAMEROUN • <span className="text-doulia-lime">DOULIA</span>
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
