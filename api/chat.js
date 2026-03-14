@@ -6,11 +6,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { message, history } = req.body;
+  const { message, history } = req.body || {};
   const apiKey = process.env.GEMINI_API_KEY;
 
+  if (!message) {
+    return res.status(400).json({ error: 'Le message est requis.' });
+  }
+
   if (!apiKey) {
-    return res.status(500).json({ error: 'Erreur : Clé API manquante sur Vercel.' });
+    return res.status(500).json({ error: 'Erreur : Clé API manquante sur le serveur.' });
   }
 
   try {
@@ -56,12 +60,16 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
 [INFORMATIONS DE CONTACT OFFICIELLES]
 Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27`,
       },
-      history: history,
+      history: history || [],
     });
 
     const result = await chat.sendMessage({ message: message });
     
-    res.status(200).json({ text: result.text });
+    if (!result || !result.text) {
+      throw new Error("La réponse de l'IA est vide.");
+    }
+
+    return res.status(200).json({ text: result.text });
 
   } catch (error) {
     console.error("ERREUR SDK GEMINI DETAILEE:", {

@@ -1,3 +1,4 @@
+import { GoogleGenAI } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = `
 [RÔLE ET IDENTITÉ]
@@ -51,23 +52,47 @@ Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27
 
 export const getGeminiResponse = async (message: string, history: { role: "user" | "model", parts: { text: string }[] }[]) => {
   try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message, history }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Erreur lors de l\'appel à l\'API');
+    // Try to get the API key from multiple possible sources
+    const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error("Clé API Gemini introuvable dans process.env ou import.meta.env");
+      throw new Error("Clé API Gemini manquante. Veuillez vérifier la configuration de l'environnement.");
     }
 
-    const data = await response.json();
-    return data.text;
-  } catch (error) {
-    console.error("Erreur frontend Gemini:", error);
+    const ai = new GoogleGenAI({ apiKey });
+    
+    // Use generateContent with history for maximum compatibility
+    const contents = [
+      ...history,
+      { role: "user", parts: [{ text: message }] }
+    ];
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: contents,
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+      },
+    });
+    
+    if (!response || !response.text) {
+      console.error("Réponse Gemini vide ou malformée:", response);
+      throw new Error("La réponse de l'IA est vide.");
+    }
+
+    return response.text;
+  } catch (error: any) {
+    console.error("Erreur détaillée Gemini:", error);
+    
+    // Provide more specific error messages if possible
+    if (error.message?.includes("API_KEY_INVALID")) {
+      throw new Error("La clé API Gemini est invalide. Veuillez vérifier votre configuration.");
+    }
+    if (error.message?.includes("User location is not supported")) {
+      throw new Error("Le service Gemini n'est pas encore disponible dans votre région (Cameroun). Essayez d'utiliser un VPN ou contactez le support.");
+    }
+    
     throw error;
   }
 };

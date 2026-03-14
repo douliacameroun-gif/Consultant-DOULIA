@@ -139,7 +139,6 @@ export default function App() {
 
     try {
       // Construct history from current messages (excluding the one we just added if it's not a retry)
-      // If it's a retry, the last message is already the user message, so we should take everything except the last one as history
       const currentMessages = isRetry ? messages : [...messages];
       const history = currentMessages.map(m => ({
         role: m.role,
@@ -148,10 +147,22 @@ export default function App() {
       
       const response = await getGeminiResponse(userMessage, history);
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setError(userMessage);
-      setMessages(prev => [...prev, { role: 'model', content: "Une erreur est survenue. Vérifiez votre connexion ou réessayez plus tard. On est ensemble !" }]);
+      
+      let errorMessage = "Une erreur est survenue. Vérifiez votre connexion ou réessayez plus tard. On est ensemble !";
+      
+      // If the error has a specific message we want to show
+      if (err.message && (
+        err.message.includes("Clé API") || 
+        err.message.includes("région") || 
+        err.message.includes("invalide")
+      )) {
+        errorMessage = `__Oups !__ ${err.message}`;
+      }
+      
+      setMessages(prev => [...prev, { role: 'model', content: errorMessage }]);
     } finally {
       setIsLoading(false);
     }
@@ -225,7 +236,7 @@ export default function App() {
               </button>
               <button 
                 onClick={() => openAudit()}
-                className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-doulia-night px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.3)] active:scale-95 flex items-center gap-2"
+                className="bg-gradient-to-r from-doulia-lime to-doulia-accent-blue text-doulia-night px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.3)] active:scale-95 flex items-center gap-2"
               >
                 <Activity size={16} />
                 Audit IA
@@ -263,7 +274,7 @@ export default function App() {
               </button>
               <button 
                 onClick={() => { openAudit(); setIsMenuOpen(false); }}
-                className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-white px-5 py-4 rounded-2xl text-center font-bold flex items-center justify-center gap-2"
+                className="bg-gradient-to-r from-doulia-lime to-doulia-accent-blue text-white px-5 py-4 rounded-2xl text-center font-bold flex items-center justify-center gap-2"
               >
                 <ClipboardList size={20} />
                 Démarrer l'Audit
@@ -323,7 +334,7 @@ export default function App() {
                     <div className={cn(
                       "mt-1 p-2 bg-white/5 rounded-xl transition-all group-hover/item:bg-white/10 group-hover/item:scale-110", 
                       item.color,
-                      i === 0 ? "glow-pulse-lime" : i === 1 ? "glow-pulse-gold" : ""
+                      i === 0 ? "glow-pulse-lime" : i === 1 ? "glow-pulse-accent-blue" : ""
                     )}>
                       <item.icon size={20} />
                     </div>
@@ -343,7 +354,7 @@ export default function App() {
                     <div className="animate-marquee whitespace-nowrap flex items-center gap-4 px-4">
                       {[...item.solutions, ...item.solutions].map((sol, idx) => (
                         <span key={idx} className="text-[10px] uppercase tracking-wider font-bold text-white/40 flex items-center gap-2">
-                          <span className={cn("w-1.5 h-1.5 rounded-full", idx % 2 === 0 ? "bg-doulia-lime" : "bg-doulia-gold")} />
+                          <span className={cn("w-1.5 h-1.5 rounded-full", idx % 2 === 0 ? "bg-doulia-lime" : "bg-doulia-accent-blue")} />
                           {sol}
                         </span>
                       ))}
@@ -582,7 +593,7 @@ export default function App() {
           <div className="p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
             <div className="relative flex items-end gap-2">
               <div className="flex-1 relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-doulia-lime/20 to-doulia-gold/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-doulia-lime/20 to-doulia-accent-blue/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                 <textarea
                   value={input}
                   onChange={(e) => {
@@ -620,7 +631,7 @@ export default function App() {
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-white p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(190,242,100,0.4)] active:scale-95 relative z-10"
+                  className="bg-gradient-to-r from-doulia-lime to-doulia-accent-blue text-white p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(190,242,100,0.4)] active:scale-95 relative z-10"
                 >
                   <Send size={20} />
                 </button>
