@@ -80,7 +80,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
             </button>
             <button 
               onClick={() => onNavigate('audit')}
-              className="flex items-center gap-1.5 text-doulia-turquoise hover:text-doulia-violet transition-colors text-[10px] font-bold uppercase tracking-widest"
+              className="flex items-center gap-1.5 text-doulia-lime hover:text-doulia-gold transition-colors text-[10px] font-bold uppercase tracking-widest"
             >
               <Activity size={14} />
               {t.audit}
@@ -102,7 +102,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-2xl md:text-4xl font-display font-bold text-doulia-turquoise mb-3 uppercase tracking-tighter">
+            <h2 className="text-2xl md:text-4xl font-display font-bold text-doulia-lime mb-3 uppercase tracking-tighter">
               {t.title}
             </h2>
             <p className="text-base text-white/60 mb-8 max-w-xl mx-auto font-light">
@@ -114,9 +114,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                 href="https://www.doulia.cm" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-turquoise/30 transition-all group"
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
               >
-                <div className="w-10 h-10 bg-doulia-turquoise/10 rounded-xl flex items-center justify-center text-doulia-turquoise mb-3 mx-auto group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Globe size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.website}</p>
@@ -125,9 +125,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
 
               <a 
                 href="mailto:contact@doulia.cm"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-turquoise/30 transition-all group"
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
               >
-                <div className="w-10 h-10 bg-doulia-turquoise/10 rounded-xl flex items-center justify-center text-doulia-turquoise mb-3 mx-auto group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Mail size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.email}</p>
@@ -138,9 +138,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                 href="https://www.linkedin.com/company/doulia"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-turquoise/30 transition-all group"
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
               >
-                <div className="w-10 h-10 bg-doulia-turquoise/10 rounded-xl flex items-center justify-center text-doulia-turquoise mb-3 mx-auto group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Linkedin size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.linkedin}</p>
@@ -151,9 +151,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
                 href="https://www.facebook.com/doulia"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-turquoise/30 transition-all group"
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
               >
-                <div className="w-10 h-10 bg-doulia-turquoise/10 rounded-xl flex items-center justify-center text-doulia-turquoise mb-3 mx-auto group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Facebook size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.facebook}</p>
@@ -165,9 +165,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="inline-block glass-panel border-doulia-turquoise/30 p-6 md:p-8 rounded-[2rem] shadow-glow-turquoise/10"
+              className="inline-block glass-panel border-doulia-lime/30 p-6 md:p-8 rounded-[2rem] shadow-glow-lime/10"
             >
-              <div className="flex items-center justify-center gap-2 text-doulia-turquoise mb-3">
+              <div className="flex items-center justify-center gap-2 text-doulia-lime mb-3">
                 <MessageSquare size={20} />
                 <p className="font-bold uppercase tracking-widest text-xs md:text-sm">{t.whatsapp}</p>
               </div>

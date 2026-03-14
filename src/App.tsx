@@ -42,45 +42,23 @@ interface Message {
 const ParticleBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <div className="absolute inset-0 grid-pattern opacity-20" />
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-doulia-turquoise/10 rounded-full blur-[120px] animate-float" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-doulia-violet/10 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-5s' }} />
-      {[...Array(15)].map((_, i) => (
+      {[...Array(20)].map((_, i) => (
         <div
           key={i}
           className="particle"
           style={{
-            width: Math.random() * 2 + 'px',
-            height: Math.random() * 2 + 'px',
+            width: Math.random() * 4 + 'px',
+            height: Math.random() * 4 + 'px',
             left: Math.random() * 100 + '%',
             top: Math.random() * 100 + '%',
             animationDuration: Math.random() * 10 + 10 + 's',
             animationDelay: Math.random() * 5 + 's',
-            opacity: Math.random() * 0.3
+            opacity: Math.random() * 0.5
           }}
         />
       ))}
     </div>
   );
-};
-
-const Typewriter = ({ text, onComplete }: { text: string; onComplete?: () => void }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 15); // Adjust speed here
-      return () => clearTimeout(timeout);
-    } else if (onComplete) {
-      onComplete();
-    }
-  }, [currentIndex, text, onComplete]);
-
-  return <>{displayedText}</>;
 };
 
 export default function App() {
@@ -99,24 +77,10 @@ export default function App() {
   const [resumeCode, setResumeCode] = useState<string | null>(null);
   const [showSolutions, setShowSolutions] = useState(false);
   const [showContact, setShowContact] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
   const typeformId = "xe2vUwE1";
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-      
-      const target = e.target as HTMLElement;
-      const isButton = target.closest('button') || target.closest('a');
-      setIsHovering(!!isButton);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -218,12 +182,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-doulia-night text-white flex flex-col font-sans relative overflow-x-hidden">
-      <div 
-        className={cn("cursor-glow", isHovering && "active")} 
-        style={{ left: cursorPos.x, top: cursorPos.y }} 
-      />
-      <div className="fixed inset-0 grid-pattern pointer-events-none opacity-20 z-0" />
+    <div className="min-h-screen bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-x-hidden">
+      <div className="fixed inset-0 grid-pattern pointer-events-none opacity-40 z-0" />
       <div className="scanline" />
       <ParticleBackground />
       
@@ -238,7 +198,7 @@ export default function App() {
                 <img 
                   src="https://i.postimg.cc/Z5cbrHQb/LOGO_DOULIA.png" 
                   alt="DOULIA Logo" 
-                  className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(0,242,234,0.7)]"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(190,242,100,0.7)]"
                   referrerPolicy="no-referrer"
                 />
               </motion.div>
@@ -246,26 +206,26 @@ export default function App() {
                 <span className="text-2xl font-display font-bold tracking-tighter ai-gradient-text">
                   DOULIA
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-doulia-turquoise font-bold">Consultant Digital</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-doulia-lime font-bold">Consultant Digital</span>
               </div>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
               <button 
                 onClick={() => setShowSolutions(true)}
-                className="text-sm font-medium text-white/70 hover:text-doulia-turquoise transition-colors"
+                className="text-sm font-medium text-white/70 hover:text-doulia-lime transition-colors"
               >
                 Solutions
               </button>
               <button 
                 onClick={() => setShowContact(true)}
-                className="text-sm font-medium text-white/70 hover:text-doulia-turquoise transition-colors"
+                className="text-sm font-medium text-white/70 hover:text-doulia-lime transition-colors"
               >
                 Contact
               </button>
               <button 
                 onClick={() => openAudit()}
-                className="bg-gradient-to-r from-doulia-turquoise to-doulia-violet text-doulia-night px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,255,0.3)] active:scale-95 flex items-center gap-2"
+                className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-doulia-night px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.3)] active:scale-95 flex items-center gap-2"
               >
                 <Activity size={16} />
                 Audit IA
@@ -303,7 +263,7 @@ export default function App() {
               </button>
               <button 
                 onClick={() => { openAudit(); setIsMenuOpen(false); }}
-                className="bg-gradient-to-r from-doulia-turquoise to-doulia-violet text-white px-5 py-4 rounded-2xl text-center font-bold flex items-center justify-center gap-2"
+                className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-white px-5 py-4 rounded-2xl text-center font-bold flex items-center justify-center gap-2"
               >
                 <ClipboardList size={20} />
                 Démarrer l'Audit
@@ -320,13 +280,13 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-panel p-5 rounded-[2rem] relative group gemini-border-glow"
+            className="glass-panel p-5 rounded-[2rem] relative overflow-hidden group gemini-border-glow"
           >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Layers size={80} className="text-doulia-turquoise" />
+              <Layers size={80} className="text-doulia-lime" />
             </div>
             <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2 ai-gradient-text">
-              <Zap size={20} className="text-doulia-turquoise glow-pulse-turquoise" />
+              <Zap size={20} className="text-doulia-lime glow-pulse-lime" />
               L'Écosystème DOULIA
             </h2>
             <ul className="space-y-4">
@@ -335,14 +295,14 @@ export default function App() {
                   title: "DOULIA Connect", 
                   desc: "Intelligence conversationnelle WhatsApp & Web.", 
                   icon: Phone, 
-                  color: "text-doulia-turquoise",
+                  color: "text-doulia-lime",
                   solutions: ["Chatbot Omnicanal 24h/7", "Qualification & Scoring Prédictif", "Booking & Prise de RDV Autonome", "Fidélisation Émotionnelle", "Relance Mobile Money Intelligente", "Analyse de Sentiment Client", "Support Multilingue"]
                 },
                 { 
                   title: "DOULIA Process", 
                   desc: "Automatisation des flux opérationnels.", 
                   icon: Shield, 
-                  color: "text-doulia-turquoise",
+                  color: "text-doulia-lime",
                   solutions: ["Conception d'Agents IA sur-Mesure", "ERP & CRM assistés par IA", "Automatisation Workflow RH & Admin", "Audit de processus algorithmique", "Automatisation Facturation OHADA", "Gestion Prédictive des stocks", "Contrôle Qualité IA Optique"]
                 },
                 { 
@@ -363,12 +323,12 @@ export default function App() {
                     <div className={cn(
                       "mt-1 p-2 bg-white/5 rounded-xl transition-all group-hover/item:bg-white/10 group-hover/item:scale-110", 
                       item.color,
-                      i === 0 ? "glow-pulse-turquoise" : i === 1 ? "glow-pulse-violet" : ""
+                      i === 0 ? "glow-pulse-lime" : i === 1 ? "glow-pulse-gold" : ""
                     )}>
                       <item.icon size={20} />
                     </div>
                     <div>
-                      <p className="font-bold text-base text-white group-hover/item:text-doulia-turquoise transition-colors">{item.title}</p>
+                      <p className="font-bold text-base text-white group-hover/item:text-doulia-lime transition-colors">{item.title}</p>
                       <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
                     </div>
                   </motion.div>
@@ -383,7 +343,7 @@ export default function App() {
                     <div className="animate-marquee whitespace-nowrap flex items-center gap-4 px-4">
                       {[...item.solutions, ...item.solutions].map((sol, idx) => (
                         <span key={idx} className="text-[10px] uppercase tracking-wider font-bold text-white/40 flex items-center gap-2">
-                          <span className={cn("w-1.5 h-1.5 rounded-full", idx % 2 === 0 ? "bg-doulia-turquoise" : "bg-doulia-violet")} />
+                          <span className={cn("w-1.5 h-1.5 rounded-full", idx % 2 === 0 ? "bg-doulia-lime" : "bg-doulia-gold")} />
                           {sol}
                         </span>
                       ))}
@@ -395,10 +355,10 @@ export default function App() {
             
             <button 
               onClick={() => openAudit()}
-              className="mt-6 w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all group"
+              className="mt-6 w-full btn-audit-glow text-doulia-night py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all group"
             >
-              <ClipboardList size={18} className="text-doulia-turquoise group-hover:scale-110 transition-transform" />
-              Lancer l'Audit Digital
+              <ClipboardList size={22} className="group-hover:scale-110 transition-transform" />
+              Lancer l'Audit Principal
             </button>
           </motion.div>
         </div>
@@ -421,12 +381,12 @@ export default function App() {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-doulia-turquoise border-2 border-doulia-night rounded-full shadow-[0_0_10px_#00FFFF]"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
               </div>
               <div>
                 <p className="font-bold text-sm text-white tracking-tight">Consultant DOULIA</p>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1 h-1 bg-doulia-turquoise rounded-full animate-pulse"></div>
+                  <div className="w-1 h-1 bg-doulia-lime rounded-full animate-pulse"></div>
                   <p className="text-[8px] text-white/40 font-bold uppercase tracking-widest">Système Actif • Douala</p>
                 </div>
               </div>
@@ -434,7 +394,7 @@ export default function App() {
             
             <button 
               onClick={() => openAudit()}
-              className="hidden sm:flex text-[10px] font-bold text-doulia-turquoise bg-doulia-turquoise/10 px-3 py-1.5 rounded-lg hover:bg-doulia-turquoise/20 transition-all border border-doulia-turquoise/20 items-center gap-1.5"
+              className="hidden sm:flex text-[10px] font-bold text-doulia-lime bg-doulia-lime/10 px-3 py-1.5 rounded-lg hover:bg-doulia-lime/20 transition-all border border-doulia-lime/20 items-center gap-1.5"
             >
               <Activity size={12} />
               Diagnostic IA
@@ -471,8 +431,8 @@ export default function App() {
                 <div className={cn(
                   "p-5 rounded-[1.5rem] text-base leading-relaxed shadow-2xl transition-all duration-300",
                   msg.role === 'user' 
-                    ? "bg-gradient-to-br from-doulia-violet to-doulia-turquoise text-white rounded-tr-none border border-white/20 shadow-[0_0_20px_rgba(0,240,255,0.2)]" 
-                    : "bg-doulia-dark/80 text-white/90 border border-doulia-turquoise/20 rounded-tl-none backdrop-blur-[12px] hover:bg-doulia-dark/90 shadow-[inset_0_0_15px_rgba(0,240,255,0.05)]"
+                    ? "bg-white/10 text-white rounded-tr-none border border-white/10" 
+                    : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md hover:bg-white/[0.05]"
                 )}>
                   <div className="markdown-body">
                     <ReactMarkdown
@@ -484,7 +444,7 @@ export default function App() {
                                 const parts = node.split(/([❶-❿])/g);
                                 return parts.map((part, i) => 
                                   /[❶-❿]/.test(part) ? (
-                                    <span key={i} className="text-doulia-turquoise font-bold inline-flex items-center justify-center mx-1 transform scale-125">
+                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-125">
                                       {part}
                                     </span>
                                   ) : part
@@ -493,12 +453,6 @@ export default function App() {
                               return node;
                             });
                           };
-                          
-                          // Only use Typewriter for the last model message
-                          if (msg.role === 'model' && i === messages.length - 1 && !isLoading) {
-                            return <p><Typewriter text={children as string} onComplete={scrollToBottom} /></p>;
-                          }
-                          
                           return <p>{processBubbles(children)}</p>;
                         },
                         li: ({ children }) => {
@@ -508,7 +462,7 @@ export default function App() {
                                 const parts = node.split(/([❶-❿])/g);
                                 return parts.map((part, i) => 
                                   /[❶-❿]/.test(part) ? (
-                                    <span key={i} className="text-doulia-turquoise font-bold inline-flex items-center justify-center mx-1 transform scale-125">
+                                    <span key={i} className="text-doulia-lime font-bold inline-flex items-center justify-center mx-1 transform scale-125">
                                       {part}
                                     </span>
                                   ) : part
@@ -540,18 +494,18 @@ export default function App() {
                               rel="noopener noreferrer"
                               onClick={handleClick}
                               className={cn(
-                                "inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-sm transition-all my-4 group/link no-underline shadow-xl w-full sm:w-auto",
+                                "inline-flex items-center gap-3 px-6 py-3 rounded-2xl font-bold text-sm transition-all my-3 group/link no-underline shadow-lg",
                                 isWhatsApp 
-                                  ? "bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-[#25D366]/30 border border-[#25D366]/50" 
+                                  ? "bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-[#25D366]/20" 
                                   : isTypeform
-                                    ? "bg-gradient-to-r from-doulia-violet to-doulia-turquoise hover:scale-[1.02] text-white shadow-doulia-turquoise/30 border border-white/20"
+                                    ? "bg-doulia-lime hover:bg-doulia-lime/80 text-doulia-night shadow-doulia-lime/20"
                                     : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
                               )}
                             >
-                              {isWhatsApp && <Phone size={18} />}
-                              {isTypeform && <Activity size={18} />}
-                              <span className="tracking-wide uppercase text-[11px]">{children}</span>
-                              <ArrowRight size={18} className="group-hover/link:translate-x-1 transition-transform" />
+                              {isWhatsApp && <Phone size={16} />}
+                              {isTypeform && <Activity size={16} />}
+                              {children}
+                              <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
                             </a>
                           );
                         }
@@ -570,7 +524,7 @@ export default function App() {
                 className="flex gap-4 mr-auto"
               >
                 <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                  <div className="absolute inset-0 bg-doulia-turquoise/20 animate-pulse" />
+                  <div className="absolute inset-0 bg-doulia-lime/20 animate-pulse" />
                   <img 
                     src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
@@ -582,8 +536,8 @@ export default function App() {
                   <div className="absolute inset-0 shimmer opacity-30" />
                   <div className="flex flex-col gap-2 relative z-10">
                     <div className="flex items-center gap-2">
-                      <Cpu size={12} className="text-doulia-turquoise animate-spin-slow" />
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-doulia-turquoise animate-pulse">
+                      <Cpu size={12} className="text-doulia-lime animate-spin-slow" />
+                      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-doulia-lime animate-pulse">
                         DOULIA analyse votre demande...
                       </span>
                     </div>
@@ -594,10 +548,10 @@ export default function App() {
                           animate={{ 
                             scale: [1, 1.4, 1], 
                             opacity: [0.3, 1, 0.3],
-                            backgroundColor: i === 1 ? ["#00f2ea", "#a3ff33", "#00f2ea"] : "#00f2ea"
+                            backgroundColor: i === 1 ? ["#bef264", "#a3ff33", "#bef264"] : "#bef264"
                           }}
                           transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
-                          className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(0,242,234,0.5)]"
+                          className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(190,242,100,0.5)]"
                         />
                       ))}
                     </div>
@@ -628,7 +582,7 @@ export default function App() {
           <div className="p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
             <div className="relative flex items-end gap-2">
               <div className="flex-1 relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-doulia-turquoise/20 to-doulia-violet/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-doulia-lime/20 to-doulia-gold/20 rounded-xl blur-md opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                 <textarea
                   value={input}
                   onChange={(e) => {
@@ -646,7 +600,7 @@ export default function App() {
                   }}
                   placeholder="Posez votre question à DOULIA..."
                   rows={1}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-doulia-turquoise/50 transition-all relative z-10 resize-none min-h-[44px] max-h-[200px] overflow-y-auto"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-doulia-lime/50 transition-all relative z-10 resize-none min-h-[44px] max-h-[200px] overflow-y-auto"
                   disabled={isLoading}
                 />
               </div>
@@ -657,7 +611,7 @@ export default function App() {
                   className={cn(
                     "p-3 rounded-xl transition-all relative z-10 border border-white/10",
                     isListening 
-                      ? "bg-doulia-turquoise text-doulia-night shadow-[0_0_20px_rgba(0,242,234,0.4)]" 
+                      ? "bg-doulia-lime text-doulia-night shadow-[0_0_20px_rgba(190,242,100,0.4)]" 
                       : "bg-white/5 text-white/70 hover:bg-white/10"
                   )}
                 >
@@ -666,7 +620,7 @@ export default function App() {
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-doulia-turquoise to-doulia-violet text-white p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(0,242,234,0.4)] active:scale-95 relative z-10"
+                  className="bg-gradient-to-r from-doulia-lime to-doulia-gold text-white p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(190,242,100,0.4)] active:scale-95 relative z-10"
                 >
                   <Send size={20} />
                 </button>
@@ -710,11 +664,11 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[3rem] shadow-[0_0_50px_rgba(0,242,234,0.1)] border border-white/10 relative flex flex-col gemini-border-glow"
+              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(190,242,100,0.1)] border border-white/10 relative flex flex-col gemini-border-glow"
             >
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-doulia-turquoise/10 rounded-xl text-doulia-turquoise">
+                  <div className="p-2 bg-doulia-lime/10 rounded-xl text-doulia-lime">
                     <ClipboardList size={24} />
                   </div>
                   <div>
@@ -755,7 +709,7 @@ export default function App() {
             <span className="font-display font-bold tracking-tighter text-lg">DOULIA</span>
           </div>
           <p className="text-[9px] text-white/30 font-medium tracking-widest uppercase text-center">
-            © 2026 DOULIA TECHNOLOGY • DOUALA • CAMEROUN • <span className="text-doulia-turquoise">DOULIA</span>
+            © 2026 DOULIA TECHNOLOGY • DOUALA • CAMEROUN • <span className="text-doulia-lime">DOULIA</span>
           </p>
         </div>
       </footer>

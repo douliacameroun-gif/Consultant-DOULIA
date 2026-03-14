@@ -52,7 +52,7 @@ const AIBackground: React.FC = () => {
         }
 
         // Draw particle
-        ctx.fillStyle = `rgba(0, 242, 234, ${p.alpha})`;
+        ctx.fillStyle = `rgba(190, 242, 100, ${p.alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -62,7 +62,7 @@ const AIBackground: React.FC = () => {
         const mdy = p.y - mouseRef.current.y;
         const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
         if (mDist < 150) {
-          ctx.strokeStyle = `rgba(139, 92, 246, ${0.2 * (1 - mDist / 150)})`;
+          ctx.strokeStyle = `rgba(251, 191, 36, ${0.2 * (1 - mDist / 150)})`;
           ctx.lineWidth = 0.5;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
@@ -78,7 +78,7 @@ const AIBackground: React.FC = () => {
           const distance = Math.sqrt(dx * dx + dy * dy);
           
           if (distance < 120) {
-            ctx.strokeStyle = `rgba(0, 242, 234, ${0.15 * (1 - distance / 120)})`;
+            ctx.strokeStyle = `rgba(190, 242, 100, ${0.15 * (1 - distance / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
