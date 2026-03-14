@@ -21,10 +21,14 @@
 @layer utilities {
   .glass-panel {
     @apply bg-white/[0.03] backdrop-blur-[12px] border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+    backface-visibility: hidden;
+    transform: translateZ(0);
   }
   
   .glow-neon {
     @apply shadow-[0_0_20px_rgba(0,240,255,0.15),inset_0_0_20px_rgba(0,240,255,0.05)];
+    backface-visibility: hidden;
+    transform: translateZ(0);
   }
 
   .cursor-glow {
@@ -197,37 +201,48 @@
 
 .gemini-border-glow {
   position: relative;
+  isolation: isolate;
 }
 
 .gemini-border-glow::before {
   content: "";
   position: absolute;
-  inset: -1.5px;
+  inset: -2px;
   background: conic-gradient(
     from 0deg,
     transparent 0%,
     var(--color-doulia-turquoise) 15%,
-    var(--color-doulia-violet) 30%,
-    transparent 45%,
+    var(--color-doulia-violet) 35%,
+    transparent 50%,
     transparent 100%
   );
   border-radius: inherit;
   animation: rotate-glow 4s linear infinite;
+  z-index: -2;
+  backface-visibility: hidden;
+  transform: translateZ(0) rotate(0deg);
+}
+
+.gemini-border-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-doulia-night);
+  border-radius: inherit;
   z-index: -1;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  padding: 1.5px;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 @keyframes rotate-glow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { transform: translateZ(0) rotate(0deg); }
+  to { transform: translateZ(0) rotate(360deg); }
 }
 
 .markdown-body {
   @apply text-sm leading-relaxed text-white/90;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .markdown-body p {

@@ -14,12 +14,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const genAI = new GoogleGenAI(apiKey);
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     
-    // --- CORRECTION : UTILISATION DE GEMINI 3 FLASH PREVIEW ---
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash-preview", 
-      systemInstruction: `[RÔLE ET IDENTITÉ]
+    const chat = ai.chats.create({
+      model: "gemini-3-flash-preview",
+      config: {
+        systemInstruction: `[RÔLE ET IDENTITÉ]
 Tu es "l'Expert Consultant DOULIA", une IA de haut niveau spécialisée dans la transformation digitale et l'intégration de l'Intelligence Artificielle pour les entreprises au Cameroun. Tu es basé à Douala.
 Ton ton est professionnel, chaleureux, bilingue (Français/Anglais) mais ta langue par défaut est le Français, et extrêmement pragmatique. Tu incarnes le "DOULIA Love" : tu es profondément empathique, à l'écoute, et tu encourage les entrepreneurs. Si un client rencontre des difficultés, rassure-le, ton but est de faire grandir les entreprises camerounaises.
 
@@ -54,14 +54,14 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
 5. Listes : Utilise les bulles numériques rondes (❶, ❷, ❸...).
 
 [INFORMATIONS DE CONTACT OFFICIELLES]
-Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27`
+Site : www.doulia.cm | Email : contact@doulia.cm | Tél : (+237) 6 73 04 31 27`,
+      },
+      history: history,
     });
 
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
+    const result = await chat.sendMessage({ message: message });
     
-    res.status(200).json({ text: response.text() });
+    res.status(200).json({ text: result.text });
 
   } catch (error) {
     console.error("ERREUR SDK GEMINI:", error);

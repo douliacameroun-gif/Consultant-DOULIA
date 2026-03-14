@@ -320,7 +320,7 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-panel p-5 rounded-[2rem] relative overflow-hidden group gemini-border-glow"
+            className="glass-panel p-5 rounded-[2rem] relative group gemini-border-glow"
           >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <Layers size={80} className="text-doulia-turquoise" />
@@ -710,7 +710,7 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(0,242,234,0.1)] border border-white/10 relative flex flex-col gemini-border-glow"
+              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[3rem] shadow-[0_0_50px_rgba(0,242,234,0.1)] border border-white/10 relative flex flex-col gemini-border-glow"
             >
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-3">
