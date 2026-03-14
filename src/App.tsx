@@ -169,7 +169,6 @@ export default function App() {
     setError(null);
 
     try {
-      // Construct history from current messages (excluding the one we just added if it's not a retry)
       const currentMessages = isRetry ? messages : [...messages];
       const history = currentMessages.map(m => ({
         role: m.role,
@@ -181,19 +180,7 @@ export default function App() {
     } catch (err: any) {
       console.error(err);
       setError(userMessage);
-      
-      let errorMessage = "Une erreur est survenue. Vérifiez votre connexion ou réessayez plus tard. On est ensemble !";
-      
-      // If the error has a specific message we want to show
-      if (err.message && (
-        err.message.includes("Clé API") || 
-        err.message.includes("région") || 
-        err.message.includes("invalide")
-      )) {
-        errorMessage = `__Oups !__ ${err.message}`;
-      }
-      
-      setMessages(prev => [...prev, { role: 'model', content: errorMessage }]);
+      setMessages(prev => [...prev, { role: 'model', content: "Une erreur est survenue. Vérifiez votre connexion ou réessayez plus tard. On est ensemble !" }]);
     } finally {
       setIsLoading(false);
     }
@@ -229,7 +216,6 @@ export default function App() {
       <div className="scanline" />
       <ParticleBackground />
       
-      {/* Chat Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-0 sm:p-4 lg:p-6 relative z-10">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -292,35 +278,55 @@ export default function App() {
                 <Trash2 size={18} />
               </button>
               
-              {/* Mobile Menu Toggle (if needed for very small screens) */}
               <button className="sm:hidden p-2 text-white/60" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <Menu size={20} />
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
 
-          {/* Mobile Navigation Overlay */}
+          {/* Mobile Navigation Overlay - CORRIGÉ POUR LA LISIBILITÉ */}
           <AnimatePresence>
             {isMenuOpen && (
               <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="sm:hidden absolute top-20 left-4 right-4 z-50 glass-panel p-4 rounded-2xl border border-white/10 shadow-2xl"
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                className="sm:hidden absolute top-24 left-4 right-4 z-[100] bg-doulia-night/98 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
               >
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
+                  <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-2 ml-2">Navigation</div>
+                  
                   <button 
                     onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-white/70 hover:text-doulia-lime hover:bg-white/5 rounded-xl transition-all"
+                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-2xl transition-all flex items-center gap-4 group"
                   >
-                    Nos Solutions
+                    <div className="p-2 bg-doulia-lime/10 rounded-lg text-doulia-lime">
+                      <Layers size={20} />
+                    </div>
+                    <span className="flex-1">Nos Solutions</span>
+                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
+
                   <button 
                     onClick={() => { setShowContact(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-white/70 hover:text-doulia-lime hover:bg-white/5 rounded-xl transition-all"
+                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-2xl transition-all flex items-center gap-4 group"
                   >
-                    Contact
+                    <div className="p-2 bg-doulia-accent-blue/10 rounded-lg text-doulia-accent-blue">
+                      <Phone size={20} />
+                    </div>
+                    <span className="flex-1">Contact & Support</span>
+                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
+
+                  <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                    <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest">© DOULIA 2026</p>
+                    <button 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-doulia-lime text-[10px] font-bold uppercase tracking-widest"
+                    >
+                      Fermer
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -405,7 +411,6 @@ export default function App() {
                           const handleClick = (e: React.MouseEvent) => {
                             if (isTypeform) {
                               e.preventDefault();
-                              // Extract resume_chat from hash or query
                               const url = new URL(href || '');
                               const code = url.hash.split('resume_chat=')[1] || url.searchParams.get('resume_chat');
                               openAudit(code);
@@ -485,22 +490,6 @@ export default function App() {
               </motion.div>
             )}
             <div ref={messagesEndRef} />
-            
-            {error && !isLoading && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex justify-center p-4"
-              >
-                <button 
-                  onClick={() => handleSend(error, true)}
-                  className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-lg"
-                >
-                  <Zap size={16} />
-                  Réessayer la demande
-                </button>
-              </motion.div>
-            )}
           </div>
 
           {/* Input Area */}
@@ -519,8 +508,6 @@ export default function App() {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       handleSend();
-                      const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
                     }
                   }}
                   placeholder="Posez votre question à DOULIA..."
@@ -556,14 +543,13 @@ export default function App() {
                 <Shield size={8} /> Sécurisé par DOULIA
               </p>
               <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest flex items-center gap-1.5">
-                <Cpu size={8} /> Moteur Gemini 3.1 Pro
+                <Cpu size={8} /> Moteur Gemini 1.5 Flash
               </p>
             </div>
           </div>
         </motion.div>
       </main>
 
-      {/* Typeform Overlay */}
       <AnimatePresence>
         {showSolutions && (
           <SolutionsPage 
@@ -620,7 +606,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }
