@@ -217,7 +217,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-hidden">
+    <div className="h-[100dvh] bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-hidden">
       <div className="fixed inset-0 grid-pattern pointer-events-none opacity-40 z-0" />
       <div className="scanline" />
       <ParticleBackground />
@@ -229,10 +229,10 @@ export default function App() {
           className="flex flex-col h-full glass-panel sm:rounded-[2.5rem] overflow-hidden relative glow-neon"
         >
           {/* Chat Header Allégé et Organisé */}
-          <div className="p-2.5 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
-            <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-3.5 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
+            <div className="flex items-center gap-3 sm:gap-3">
               <div className="relative">
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
                   <img 
                     src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
@@ -240,18 +240,18 @@ export default function App() {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-display font-bold text-base sm:text-lg text-white tracking-tight leading-none mb-0.5 sm:mb-1">DOULIA</span>
-                <div className="flex items-center gap-1">
+                <span className="font-display font-bold text-lg sm:text-lg text-white tracking-tight leading-none mb-1 sm:mb-1">DOULIA</span>
+                <div className="flex items-center gap-1.5">
                   <div className="w-1 h-1 bg-doulia-lime rounded-full animate-pulse"></div>
-                  <p className="text-[8px] sm:text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
+                  <p className="text-[9px] sm:text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
                 </div>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button 
                 onClick={() => setShowSolutions(true)}
                 className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
