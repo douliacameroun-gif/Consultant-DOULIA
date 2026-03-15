@@ -96,17 +96,18 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate, on
         </div>
       </nav>
 
-      <section className="flex-1 py-12 px-4 overflow-y-auto flex items-center justify-center text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
+      <section className="flex-1 pt-8 pb-12 px-4 overflow-y-auto flex flex-col items-center justify-start sm:justify-center text-center relative z-10">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
+            className="flex flex-col items-center"
           >
-            <h2 className="text-2xl md:text-4xl font-display font-bold text-doulia-lime mb-3 uppercase tracking-tighter">
+            <h2 className="text-xl md:text-4xl font-display font-bold text-doulia-lime mb-2 uppercase tracking-tighter">
               {t.title}
             </h2>
-            <p className="text-base text-white/60 mb-8 max-w-xl mx-auto font-light">
+            <p className="text-sm md:text-base text-white/60 mb-6 max-w-[280px] sm:max-w-xl mx-auto font-light leading-snug">
               {t.subtitle}
             </p>
 
@@ -164,21 +165,21 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate, on
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="inline-block glass-panel border-doulia-lime/30 p-6 md:p-8 rounded-[2rem] shadow-glow-lime/10"
+              className="inline-block glass-panel border-doulia-lime/30 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-glow-lime/10"
             >
-              <div className="flex items-center justify-center gap-2 text-doulia-lime mb-3">
-                <MessageSquare size={20} />
-                <p className="font-bold uppercase tracking-widest text-xs md:text-sm">{t.whatsapp}</p>
+              <div className="flex items-center justify-center gap-2 text-doulia-lime mb-2">
+                <MessageSquare size={18} />
+                <p className="font-bold uppercase tracking-widest text-[10px] md:text-sm">{t.whatsapp}</p>
               </div>
-              <p className="text-xl md:text-2xl text-white font-display font-bold tracking-tight mb-1">
+              <p className="text-lg md:text-2xl text-white font-display font-bold tracking-tight mb-0.5">
                 (+237) 6 73 04 31 27
               </p>
-              <p className="text-base text-white/60 tracking-wide">
+              <p className="text-sm md:text-base text-white/60 tracking-wide">
                 6 56 30 48 18 | 6 88 95 40 53
               </p>
             </motion.div>
 
-            <p className="mt-8 text-[10px] text-white/20 uppercase tracking-[0.3em] leading-relaxed max-w-md mx-auto">
+            <p className="mt-6 text-[8px] md:text-[10px] text-white/20 uppercase tracking-[0.2em] md:tracking-[0.3em] leading-relaxed max-w-[240px] md:max-w-md mx-auto">
               {t.footer}
             </p>
           </motion.div>

@@ -91,6 +91,7 @@ export default function App() {
   const [externalUrl, setExternalUrl] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const isListeningRef = useRef(false);
 
   const typeformId = "xe2vUwE1";
 
@@ -99,22 +100,38 @@ export default function App() {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = false;
+        recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = 'fr-FR';
 
         recognitionRef.current.onresult = (event: any) => {
-          const transcript = event.results[0][0].transcript;
-          setInput(prev => prev + (prev ? ' ' : '') + transcript);
-          setIsListening(false);
+          let finalTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
+          }
+          if (finalTranscript) {
+            setInput(prev => prev + (prev ? ' ' : '') + finalTranscript);
+          }
         };
 
-        recognitionRef.current.onerror = () => {
-          setIsListening(false);
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('Speech recognition error', event.error);
+          if (event.error === 'not-allowed') {
+            setIsListening(false);
+            isListeningRef.current = false;
+          }
         };
 
         recognitionRef.current.onend = () => {
-          setIsListening(false);
+          if (isListeningRef.current) {
+            try {
+              recognitionRef.current.start();
+            } catch (e) {
+              // Ignore if already started
+            }
+          }
         };
       }
     }
@@ -122,10 +139,17 @@ export default function App() {
 
   const toggleListening = () => {
     if (isListening) {
+      isListeningRef.current = false;
+      setIsListening(false);
       recognitionRef.current?.stop();
     } else {
+      isListeningRef.current = true;
       setIsListening(true);
-      recognitionRef.current?.start();
+      try {
+        recognitionRef.current?.start();
+      } catch (e) {
+        console.error('Failed to start recognition', e);
+      }
     }
   };
 
@@ -156,6 +180,13 @@ export default function App() {
   const handleSend = async (customMessage?: string, isRetry = false) => {
     const userMessage = customMessage || input.trim();
     if (!userMessage || (isLoading && !isRetry)) return;
+
+    // Stop listening when sending
+    if (isListening) {
+      isListeningRef.current = false;
+      setIsListening(false);
+      recognitionRef.current?.stop();
+    }
 
     if (!isRetry) {
       if (!customMessage) setInput('');
