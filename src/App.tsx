@@ -14,6 +14,7 @@ import {
   Cpu,
   Activity,
   Layers,
+  HelpCircle,
   Trash2
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -23,6 +24,7 @@ import { twMerge } from 'tailwind-merge';
 import { Widget } from '@typeform/embed-react';
 import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
+import AboutFAQPage from './components/AboutFAQPage';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -84,7 +86,9 @@ export default function App() {
   const [showTypeform, setShowTypeform] = useState(false);
   const [resumeCode, setResumeCode] = useState<string | null>(null);
   const [showSolutions, setShowSolutions] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [externalUrl, setExternalUrl] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -203,23 +207,32 @@ export default function App() {
     setShowTypeform(true);
   };
 
+  const openExternalLink = (url: string) => {
+    // Check if it's a protocol link (WhatsApp, Email, Phone)
+    if (url.startsWith('wa.me') || url.startsWith('https://wa.me') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+      window.open(url, '_blank');
+      return;
+    }
+    setExternalUrl(url);
+  };
+
   return (
-    <div className="min-h-screen bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-x-hidden">
+    <div className="h-screen bg-doulia-night text-white flex flex-col font-sans relative bg-mesh overflow-hidden">
       <div className="fixed inset-0 grid-pattern pointer-events-none opacity-40 z-0" />
       <div className="scanline" />
       <ParticleBackground />
       
-      <main className="flex-1 max-w-7xl mx-auto w-full p-0 sm:p-4 lg:p-6 relative z-10">
+      <main className="flex-1 max-w-7xl mx-auto w-full p-0 sm:p-4 lg:p-6 relative z-10 overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col h-[calc(100vh-2rem)] glass-panel sm:rounded-[2.5rem] overflow-hidden relative glow-neon"
+          className="flex flex-col h-full glass-panel sm:rounded-[2.5rem] overflow-hidden relative glow-neon"
         >
           {/* Chat Header Allégé et Organisé */}
-          <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
-            <div className="flex items-center gap-3">
+          <div className="p-2.5 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
                   <img 
                     src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
@@ -227,23 +240,29 @@ export default function App() {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-doulia-lime border-2 border-doulia-night rounded-full shadow-[0_0_10px_#bef264]"></div>
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-display font-bold text-lg text-white tracking-tight leading-none mb-1">DOULIA</span>
-                <div className="flex items-center gap-1.5">
+                <span className="font-display font-bold text-base sm:text-lg text-white tracking-tight leading-none mb-0.5 sm:mb-1">DOULIA</span>
+                <div className="flex items-center gap-1">
                   <div className="w-1 h-1 bg-doulia-lime rounded-full animate-pulse"></div>
-                  <p className="text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
+                  <p className="text-[8px] sm:text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
                 </div>
               </div>
             </div>
             
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 onClick={() => setShowSolutions(true)}
                 className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
               >
                 Solutions
+              </button>
+              <button 
+                onClick={() => setShowAbout(true)}
+                className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
+              >
+                À Propos
               </button>
               <button 
                 onClick={() => setShowContact(true)}
@@ -255,9 +274,9 @@ export default function App() {
               {/* Bouton Audit mis en perspective (Call to Action) */}
               <button 
                 onClick={() => openAudit()}
-                className="flex text-[11px] sm:text-xs font-black text-doulia-night bg-doulia-lime px-4 py-2 rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.4)] items-center gap-1.5 active:scale-95 animate-[pulse_3s_ease-in-out_infinite]"
+                className="flex text-[10px] sm:text-xs font-black text-doulia-night bg-doulia-lime px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.4)] items-center gap-1 active:scale-95 animate-[pulse_3s_ease-in-out_infinite]"
               >
-                <Activity size={14} className="animate-bounce" />
+                <Activity size={12} className="animate-bounce" />
                 <span className="hidden xs:inline">Audit IA</span>
                 <span className="xs:hidden">Audit</span>
               </button>
@@ -282,33 +301,44 @@ export default function App() {
                   
                   <button 
                     onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-2xl transition-all flex items-center gap-4 group"
+                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
-                    <div className="p-2 bg-doulia-lime/10 rounded-lg text-doulia-lime">
-                      <Layers size={20} />
+                    <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
+                      <Layers size={18} />
                     </div>
                     <span className="flex-1">Nos Solutions</span>
-                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
                   <button 
                     onClick={() => { setShowContact(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-2xl transition-all flex items-center gap-4 group"
+                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
-                    <div className="p-2 bg-doulia-accent-blue/10 rounded-lg text-doulia-accent-blue">
-                      <Phone size={20} />
+                    <div className="p-1.5 bg-doulia-accent-blue/10 rounded-lg text-doulia-accent-blue">
+                      <Phone size={18} />
                     </div>
                     <span className="flex-1">Contact & Support</span>
-                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+
+                  <button 
+                    onClick={() => { setShowAbout(true); setIsMenuOpen(false); }}
+                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
+                      <HelpCircle size={18} />
+                    </div>
+                    <span className="flex-1">À Propos & FAQ</span>
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
                   
                   {/* Bouton Effacer Historique déplacé dans le menu */}
                   <button 
                     onClick={() => { clearHistory(); setIsMenuOpen(false); }}
-                    className="w-full text-left p-4 text-sm font-bold text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 rounded-2xl transition-all flex items-center gap-4"
+                    className="w-full text-left p-3 text-[13px] font-bold text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-3"
                   >
-                    <div className="p-2 bg-red-500/10 rounded-lg">
-                      <Trash2 size={20} />
+                    <div className="p-1.5 bg-red-500/10 rounded-lg">
+                      <Trash2 size={18} />
                     </div>
                     <span className="flex-1">Effacer l'historique</span>
                   </button>
@@ -328,24 +358,31 @@ export default function App() {
           </AnimatePresence>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-8 space-y-4 sm:space-y-8 scrollbar-hide">
             {messages.map((msg, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
-                  "flex gap-3 sm:gap-4 max-w-[95%] sm:max-w-[80%]",
+                  "flex gap-2 sm:gap-4 max-w-[98%] sm:max-w-[80%]",
                   msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                 )}
               >
                 <div className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden",
+                  "w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden",
                   msg.role === 'user' 
-                    ? "bg-white/5 border border-white/10 text-white/70" 
+                    ? "bg-doulia-lime/20 border border-doulia-lime/30 text-white" 
                     : "bg-white"
                 )}>
-                  {msg.role === 'user' ? <User size={18} /> : (
+                  {msg.role === 'user' ? (
+                    <img 
+                      src="https://i.postimg.cc/T17Zt6Dc/DOULIA_LOGO_FOND_VERT.jpg" 
+                      alt="User" 
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
                     <img 
                       src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                       alt="DOULIA" 
@@ -355,9 +392,9 @@ export default function App() {
                   )}
                 </div>
                 <div className={cn(
-                  "p-4 sm:p-5 rounded-[1.5rem] text-sm sm:text-base leading-relaxed shadow-lg transition-all duration-300",
+                  "p-3 sm:p-5 rounded-[1.25rem] text-[13px] sm:text-base leading-relaxed shadow-lg transition-all duration-300",
                   msg.role === 'user' 
-                    ? "bg-white/10 text-white rounded-tr-none border border-white/10" 
+                    ? "bg-doulia-lime/10 text-white rounded-tr-none border border-doulia-lime/20" 
                     : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md"
                 )}>
                   <div className="markdown-body">
@@ -409,17 +446,20 @@ export default function App() {
                               const url = new URL(href || '');
                               const code = url.hash.split('resume_chat=')[1] || url.searchParams.get('resume_chat');
                               openAudit(code);
+                            } else if (href && !isWhatsApp) {
+                              e.preventDefault();
+                              openExternalLink(href);
                             }
                           };
 
                           return (
                             <a 
                               href={href} 
-                              target={isTypeform ? undefined : "_blank"} 
+                              target={isTypeform || !isWhatsApp ? undefined : "_blank"} 
                               rel="noopener noreferrer"
                               onClick={handleClick}
                               className={cn(
-                                "inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all my-2 sm:my-3 group/link no-underline",
+                                "inline-flex items-center gap-2 px-3.5 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-2xl font-bold text-[11px] sm:text-sm transition-all my-1.5 sm:my-3 group/link no-underline",
                                 isWhatsApp 
                                   ? "bg-[#25D366] text-white" 
                                   : isTypeform
@@ -427,10 +467,10 @@ export default function App() {
                                     : "bg-white/10 text-white border border-white/10"
                               )}
                             >
-                              {isWhatsApp && <Phone size={14} />}
-                              {isTypeform && <Activity size={14} />}
+                              {isWhatsApp && <Phone size={12} />}
+                              {isTypeform && <Activity size={12} />}
                               {children}
-                              <ArrowRight size={14} />
+                              <ArrowRight size={12} />
                             </a>
                           );
                         }
@@ -445,8 +485,8 @@ export default function App() {
             
             {/* Animation de chargement fixe, sobre et sans effets parasites */}
             {isLoading && (
-              <div className="flex gap-3 sm:gap-4 mr-auto">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden">
+              <div className="flex gap-2 sm:gap-4 mr-auto">
+                <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white flex items-center justify-center overflow-hidden">
                   <img 
                     src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
                     alt="DOULIA" 
@@ -454,8 +494,8 @@ export default function App() {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-[1.5rem] rounded-tl-none flex items-center h-auto sm:h-10">
-                  <span className="text-xs text-white/50 italic">DOULIA analyse votre demande...</span>
+                <div className="bg-white/5 border border-white/5 px-3 py-2 rounded-[1.25rem] rounded-tl-none flex items-center h-auto sm:h-10">
+                  <span className="text-[11px] sm:text-xs text-white/50 italic">DOULIA analyse votre demande...</span>
                 </div>
               </div>
             )}
@@ -463,7 +503,7 @@ export default function App() {
           </div>
 
           {/* Input Area - Placeholder sur une seule ligne */}
-          <div className="p-3 sm:p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
+          <div className="p-2.5 sm:p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
             <div className="relative flex items-end gap-2">
               <div className="flex-1 relative group">
                 <textarea
@@ -481,29 +521,29 @@ export default function App() {
                   }}
                   placeholder="Posez votre question à DOULIA..."
                   rows={1}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-3 text-[13px] sm:text-sm text-white placeholder:text-white/30 placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis focus:outline-none focus:border-doulia-lime/50 transition-all resize-none min-h-[44px] max-h-[150px] overflow-y-auto"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-[12px] sm:text-sm text-white placeholder:text-white/30 placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis focus:outline-none focus:border-doulia-lime/50 transition-all resize-none min-h-[40px] max-h-[150px] overflow-y-auto"
                   disabled={isLoading}
                 />
               </div>
-              <div className="flex items-center gap-2 pb-0.5">
+              <div className="flex items-center gap-1.5 sm:gap-2 pb-0.5">
                 <button
                   onClick={toggleListening}
                   disabled={isLoading}
                   className={cn(
-                    "p-3 rounded-xl transition-all border border-white/10",
+                    "p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all border border-white/10",
                     isListening 
                       ? "bg-doulia-lime text-doulia-night" 
                       : "bg-white/5 text-white/70 hover:bg-white/10"
                   )}
                 >
-                  <Mic size={20} />
+                  <Mic size={18} />
                 </button>
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-doulia-lime text-doulia-night p-3 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+                  className="bg-doulia-lime text-doulia-night p-2.5 sm:p-3 rounded-lg sm:rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
                 >
-                  <Send size={20} />
+                  <Send size={18} />
                 </button>
               </div>
             </div>
@@ -523,7 +563,11 @@ export default function App() {
             onClose={() => setShowContact(false)} 
             lang="fr"
             onNavigate={handleNavigate}
+            onOpenExternal={openExternalLink}
           />
+        )}
+        {showAbout && (
+          <AboutFAQPage onClose={() => setShowAbout(false)} />
         )}
         {showTypeform && (
           <motion.div 
@@ -541,7 +585,7 @@ export default function App() {
               <div className="p-4 sm:p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-doulia-lime/10 rounded-xl text-doulia-lime">
-                    <ClipboardList size={20} sm:size={24} />
+                    <ClipboardList size={24} />
                   </div>
                   <div>
                     <span className="font-display font-bold text-lg sm:text-xl text-white block">Audit Stratégique</span>
@@ -552,7 +596,7 @@ export default function App() {
                   onClick={() => setShowTypeform(false)}
                   className="p-2 sm:p-3 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
                 >
-                  <X size={24} sm:size={32} />
+                  <X size={32} />
                 </button>
               </div>
               <div className="flex-1 relative">
@@ -561,6 +605,54 @@ export default function App() {
                   style={{ width: '100%', height: '100%' }} 
                   className="my-form" 
                   hidden={{ resume_chat: resumeCode || '' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+        {externalUrl && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-doulia-night/95 backdrop-blur-xl flex items-center justify-center p-0 sm:p-8"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-doulia-dark w-full h-full sm:max-h-[90vh] sm:rounded-[2rem] overflow-hidden border border-white/10 relative flex flex-col"
+            >
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="p-2 bg-white/5 rounded-lg text-white/60">
+                    <Cpu size={18} />
+                  </div>
+                  <span className="text-xs font-bold text-white/60 truncate">{externalUrl}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a 
+                    href={externalUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
+                    title="Ouvrir dans un nouvel onglet"
+                  >
+                    <ArrowRight size={20} />
+                  </a>
+                  <button 
+                    onClick={() => setExternalUrl(null)}
+                    className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 bg-white">
+                <iframe 
+                  src={externalUrl} 
+                  className="w-full h-full border-none"
+                  title="External Content"
                 />
               </div>
             </motion.div>

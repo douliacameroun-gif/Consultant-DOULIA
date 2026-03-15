@@ -17,6 +17,7 @@ interface ContactPageProps {
   onClose: () => void;
   lang: 'fr' | 'en';
   onNavigate: (page: 'home' | 'solutions' | 'audit') => void;
+  onOpenExternal: (url: string) => void;
 }
 
 const translations = {
@@ -48,7 +49,7 @@ const translations = {
   }
 };
 
-const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) => {
+const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate, onOpenExternal }) => {
   const t = translations[lang];
 
   return (
@@ -56,7 +57,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-doulia-night/95 backdrop-blur-2xl overflow-y-auto"
+      className="fixed inset-0 z-[100] bg-doulia-night/95 backdrop-blur-2xl flex flex-col overflow-hidden"
     >
       <div className="fixed inset-0 grid-pattern pointer-events-none opacity-20" />
       <div className="scanline" />
@@ -95,7 +96,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
         </div>
       </nav>
 
-      <section className="py-12 px-4 min-h-screen flex items-center justify-center text-center relative z-10">
+      <section className="flex-1 py-12 px-4 overflow-y-auto flex items-center justify-center text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -111,23 +112,21 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
               {/* Site Web */}
-              <a 
-                href="https://douliacameroun-825a6.web.app/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
+              <button 
+                onClick={() => onOpenExternal("https://douliacameroun-825a6.web.app/")}
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group text-center"
               >
                 <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Globe size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.website}</p>
                 <p className="text-[9px] md:text-xs text-white/40">www.doulia.cm</p>
-              </a>
+              </button>
 
               {/* Email */}
               <a 
                 href="mailto:douliacameroun@gmail.com"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group text-center"
               >
                 <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Mail size={20} />
@@ -137,32 +136,28 @@ const ContactPage: React.FC<ContactPageProps> = ({ onClose, lang, onNavigate }) 
               </a>
 
               {/* LinkedIn */}
-              <a 
-                href="https://www.linkedin.com/company/doulia/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
+              <button 
+                onClick={() => onOpenExternal("https://www.linkedin.com/company/doulia/")}
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group text-center"
               >
                 <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Linkedin size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.linkedin}</p>
                 <p className="text-[9px] md:text-xs text-white/40">Doulia</p>
-              </a>
+              </button>
 
               {/* Facebook */}
-              <a 
-                href="https://web.facebook.com/profile.php?id=61583620293750&locale=fr_FR"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group"
+              <button 
+                onClick={() => onOpenExternal("https://web.facebook.com/profile.php?id=61583620293750&locale=fr_FR")}
+                className="glass-panel p-4 md:p-5 rounded-2xl hover:border-doulia-lime/30 transition-all group text-center"
               >
                 <div className="w-10 h-10 bg-doulia-lime/10 rounded-xl flex items-center justify-center text-doulia-lime mb-3 mx-auto group-hover:scale-110 transition-transform">
                   <Facebook size={20} />
                 </div>
                 <p className="font-bold text-white mb-0.5 text-xs md:text-sm">{t.facebook}</p>
                 <p className="text-[9px] md:text-xs text-white/40">Doulia</p>
-              </a>
+              </button>
             </div>
 
             <motion.div 
