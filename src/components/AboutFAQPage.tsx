@@ -124,7 +124,7 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
             <div className="w-6 sm:w-8 h-1 bg-doulia-lime rounded-full"></div>
             <h3 className="text-xl sm:text-2xl font-bold text-white">L'Expertise IA au Cameroun</h3>
           </div>
-          <p className="text-white/70 leading-relaxed text-base sm:text-lg mb-4 sm:mb-6 text-justify">
+          <p className="text-white/70 leading-relaxed text-base sm:text-lg mb-4 sm:mb-6">
             Basée au cœur de Douala, <strong>DOULIA</strong> est le partenaire stratégique des entreprises camerounaises qui souhaitent franchir le cap de la modernité. Nous croyons que l'Intelligence Artificielle n'est pas réservée aux géants de la tech, mais doit être un levier de croissance pour chaque PME locale.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -147,7 +147,7 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
             <Globe size={18} className="sm:w-5 sm:h-5" />
             LE DOULIA LOVE
           </h3>
-          <p className="text-white/80 italic mb-4 sm:mb-6 text-sm sm:text-base text-justify">
+          <p className="text-white/80 italic mb-4 sm:mb-6 text-sm sm:text-base">
             "Notre mission est de faire grandir les entreprises camerounaises en rendant la technologie accessible, chaleureuse et extrêmement pragmatique."
           </p>
           <ul className="space-y-2 sm:space-y-3">
@@ -181,7 +181,7 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
                   <HelpCircle size={16} className="text-doulia-lime sm:w-[18px] sm:h-[18px]" />
                   {faq.question}
                 </h4>
-                <p className="text-white/50 text-[12px] sm:text-sm leading-relaxed ml-6 sm:ml-7 text-justify">
+                <p className="text-white/50 text-[12px] sm:text-sm leading-relaxed ml-6 sm:ml-7">
                   {faq.answer}
                 </p>
               </div>

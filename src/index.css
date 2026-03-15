@@ -14,7 +14,7 @@
 
 @layer base {
   body {
-    @apply bg-doulia-night text-white font-sans overflow-x-hidden text-justify;
+    @apply bg-doulia-night text-white font-sans overflow-x-hidden;
   }
 }
 
@@ -209,7 +209,7 @@
 }
 
 .markdown-body {
-  @apply text-sm leading-relaxed text-white/90 text-justify;
+  @apply text-sm leading-relaxed text-white/90;
 }
 
 .markdown-body p {

@@ -120,7 +120,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                 </div>
                 <div className="p-5 sm:p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
                   <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2 drop-shadow-lg">1. DOULIA Connect</h3>
-                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm text-justify">Le service client qui ne dort jamais.</p>
+                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm">Le service client qui ne dort jamais.</p>
                   <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                     {[
                       { label: "Automatisation 24/7", desc: "Assistants WhatsApp & Web." },
@@ -128,7 +128,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                       { label: "Support Multilingue", desc: "Français, Anglais et Pidgin." },
                       { label: "Réservations", desc: "Synchronisation agenda." }
                     ].map((item, i) => (
-                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm text-justify">
+                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm">
                         <ChevronRight size={14} className="text-doulia-lime shrink-0" />
                         <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                       </li>
@@ -160,7 +160,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
               </div>
                 <div className="p-5 sm:p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
                   <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2 drop-shadow-lg">2. DOULIA Process</h3>
-                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm text-justify">L'automatisation de la routine.</p>
+                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm">L'automatisation de la routine.</p>
                   <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                     {[
                       { label: "Audit Processus", desc: "Identification des goulots." },
@@ -168,7 +168,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                       { label: "Rapports Auto", desc: "Génération instantanée." },
                       { label: "Veille Stratégique", desc: "Surveillance continue." }
                     ].map((item, i) => (
-                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm text-justify">
+                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm">
                         <ChevronRight size={14} className="text-doulia-lime shrink-0" />
                         <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                       </li>
@@ -200,7 +200,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
               </div>
                 <div className="p-5 sm:p-8 flex-1 flex flex-col relative z-10 group-hover:brightness-110 group-active:brightness-110 transition-all duration-300">
                   <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2 drop-shadow-lg">3. DOULIA Insight</h3>
-                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm text-justify">Décisions basées sur la donnée.</p>
+                  <p className="text-white/60 italic mb-4 sm:mb-6 text-[12px] sm:text-sm">Décisions basées sur la donnée.</p>
                   <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                     {[
                       { label: "Data Mining", desc: "Valorisation des fichiers Excel." },
@@ -208,7 +208,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                       { label: "Segmentation", desc: "Offres ultra-personnalisées." },
                       { label: "Tableaux de Bord", desc: "Pilotage KPI temps réel." }
                     ].map((item, i) => (
-                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm text-justify">
+                      <li key={i} className="flex gap-2 sm:gap-3 text-[12px] sm:text-sm">
                         <ChevronRight size={14} className="text-doulia-lime shrink-0" />
                         <p><span className="font-bold text-white">{item.label} :</span> <span className="text-white/70">{item.desc}</span></p>
                       </li>
@@ -241,7 +241,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                     <Search className="text-doulia-lime" size={18} />
                     Audits IA
                   </h4>
-                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6 text-justify">Immersion totale pour définir votre feuille de route technologique.</p>
+                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6">Immersion totale pour définir votre feuille de route technologique.</p>
                   <button 
                     onClick={() => onSelectSolution("Audit IA Stratégique")}
                     className="mt-auto text-[10px] sm:text-xs font-bold text-doulia-lime border border-doulia-lime/30 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl hover:bg-doulia-lime hover:text-doulia-night transition-all flex items-center justify-center gap-2 group/btn"
@@ -255,7 +255,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                     <Users className="text-doulia-lime" size={18} />
                     Formations
                   </h4>
-                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6 text-justify">Acculturation et montée en compétences sur les outils génératifs.</p>
+                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6">Acculturation et montée en compétences sur les outils génératifs.</p>
                   <button 
                     onClick={() => onSelectSolution("Formation IA sur-mesure")}
                     className="mt-auto text-[10px] sm:text-xs font-bold text-doulia-lime border border-doulia-lime/30 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl hover:bg-doulia-lime hover:text-doulia-night transition-all flex items-center justify-center gap-2 group/btn"
@@ -269,7 +269,7 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                     <Cpu className="text-doulia-lime" size={18} />
                     Développement
                   </h4>
-                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6 text-justify">ERP, CRM et Applications mobiles nativement dotés d'IA.</p>
+                  <p className="text-[12px] sm:text-sm text-white/40 leading-relaxed mb-4 sm:mb-6">ERP, CRM et Applications mobiles nativement dotés d'IA.</p>
                   <button 
                     onClick={() => onSelectSolution("Développement IA & Logiciel")}
                     className="mt-auto text-[10px] sm:text-xs font-bold text-doulia-lime border border-doulia-lime/30 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl hover:bg-doulia-lime hover:text-doulia-night transition-all flex items-center justify-center gap-2 group/btn"
