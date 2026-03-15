@@ -210,10 +210,12 @@
 
 .markdown-body {
   @apply text-sm leading-relaxed text-white/90;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .markdown-body p {
-  @apply mb-4 last:mb-0;
+  @apply mb-4 last:mb-0 text-white/90;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .markdown-body strong, 
@@ -234,7 +236,8 @@
 }
 
 .markdown-body li {
-  @apply list-disc;
+  @apply list-disc text-white/90;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .markdown-body code {

@@ -447,7 +447,7 @@ export default function App() {
                               return node;
                             });
                           };
-                          return <p>{processBubbles(children)}</p>;
+                          return <p className="text-white/90">{processBubbles(children)}</p>;
                         },
                         li: ({ children }) => {
                           const processBubbles = (nodes: any): any => {
@@ -465,7 +465,7 @@ export default function App() {
                               return node;
                             });
                           };
-                          return <li>{processBubbles(children)}</li>;
+                          return <li className="text-white/90">{processBubbles(children)}</li>;
                         },
                         a: ({ href, children }) => {
                           const isWhatsApp = href?.includes('wa.me');
