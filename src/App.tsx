@@ -426,7 +426,7 @@ export default function App() {
                   "p-3 sm:p-5 rounded-[1.25rem] text-[13px] sm:text-base leading-relaxed shadow-lg transition-all duration-300",
                   msg.role === 'user' 
                     ? "bg-doulia-lime/10 text-white rounded-tr-none border border-doulia-lime/20" 
-                    : "bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md"
+                    : "bg-white/[0.03] text-[#f3f4f6] border border-white/5 rounded-tl-none backdrop-blur-md"
                 )}>
                   <div className="markdown-body">
                     <ReactMarkdown
@@ -447,7 +447,7 @@ export default function App() {
                               return node;
                             });
                           };
-                          return <p className="text-white/90">{processBubbles(children)}</p>;
+                          return <p className="text-[#f3f4f6]">{processBubbles(children)}</p>;
                         },
                         li: ({ children }) => {
                           const processBubbles = (nodes: any): any => {
@@ -465,7 +465,7 @@ export default function App() {
                               return node;
                             });
                           };
-                          return <li className="text-white/90">{processBubbles(children)}</li>;
+                          return <li className="text-[#f3f4f6]">{processBubbles(children)}</li>;
                         },
                         a: ({ href, children }) => {
                           const isWhatsApp = href?.includes('wa.me');
