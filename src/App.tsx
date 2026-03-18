@@ -15,7 +15,8 @@ import {
   Activity,
   Layers,
   HelpCircle,
-  Trash2
+  Trash2,
+  TrendingUp
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getGeminiResponse } from './services/gemini';
@@ -25,6 +26,7 @@ import { Widget } from '@typeform/embed-react';
 import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
 import AboutFAQPage from './components/AboutFAQPage';
+import ROISimulator from './components/ROISimulator';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -38,21 +40,53 @@ interface Message {
 const ParticleBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {[...Array(20)].map((_, i) => (
+      {/* Particles */}
+      {[...Array(40)].map((_, i) => (
         <div
           key={i}
           className="particle"
           style={{
-            width: Math.random() * 4 + 'px',
-            height: Math.random() * 4 + 'px',
+            width: Math.random() * 3 + 1 + 'px',
+            height: Math.random() * 3 + 1 + 'px',
             left: Math.random() * 100 + '%',
             top: Math.random() * 100 + '%',
-            animationDuration: Math.random() * 10 + 10 + 's',
-            animationDelay: Math.random() * 5 + 's',
-            opacity: Math.random() * 0.5
+            animationDuration: Math.random() * 15 + 10 + 's',
+            animationDelay: Math.random() * 10 + 's',
+            opacity: Math.random() * 0.4 + 0.1,
+            background: i % 3 === 0 ? '#bef264' : '#ffffff'
           }}
         />
       ))}
+      
+      {/* Neural Lines */}
+      <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+        {[...Array(12)].map((_, i) => (
+          <motion.line
+            key={i}
+            x1={Math.random() * 100 + "%"}
+            y1={Math.random() * 100 + "%"}
+            x2={Math.random() * 100 + "%"}
+            y2={Math.random() * 100 + "%"}
+            stroke="#bef264"
+            strokeWidth="0.5"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ 
+              pathLength: [0, 1, 0],
+              opacity: [0, 0.5, 0]
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 5
+            }}
+          />
+        ))}
+      </svg>
+
+      {/* Floating Blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-doulia-lime/5 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-doulia-lime/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
     </div>
   );
 };
@@ -88,6 +122,7 @@ export default function App() {
   const [showSolutions, setShowSolutions] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [showROI, setShowROI] = useState(false);
   const [externalUrl, setExternalUrl] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -133,6 +168,15 @@ export default function App() {
             }
           }
         };
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isFromAuditUrl = window.location.href.includes('presentationdoulia.vercel.app/#contact');
+      if (isFromAuditUrl && messages.length === 1) {
+        handleSend("Bonjour, je souhaite passer un audit IA pour mon entreprise.");
       }
     }
   }, []);
@@ -284,6 +328,12 @@ export default function App() {
             
             <div className="flex items-center gap-3 sm:gap-4">
               <button 
+                onClick={() => setShowROI(true)}
+                className="hidden sm:block text-[11px] font-bold text-doulia-lime border border-doulia-lime/30 px-3 py-2 rounded-lg hover:bg-doulia-lime/10 transition-all"
+              >
+                Simulateur ROI
+              </button>
+              <button 
                 onClick={() => setShowSolutions(true)}
                 className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
               >
@@ -330,6 +380,17 @@ export default function App() {
                 <div className="flex flex-col gap-3">
                   <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-2 ml-2">Navigation</div>
                   
+                  <button 
+                    onClick={() => { setShowROI(true); setIsMenuOpen(false); }}
+                    className="w-full text-left p-3 text-sm font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
+                      <TrendingUp size={18} />
+                    </div>
+                    <span className="flex-1">Simulateur de Gains</span>
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+
                   <button 
                     onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
@@ -599,6 +660,9 @@ export default function App() {
         )}
         {showAbout && (
           <AboutFAQPage onClose={() => setShowAbout(false)} />
+        )}
+        {showROI && (
+          <ROISimulator onClose={() => setShowROI(false)} onOpenAudit={() => openAudit()} />
         )}
         {showTypeform && (
           <motion.div 

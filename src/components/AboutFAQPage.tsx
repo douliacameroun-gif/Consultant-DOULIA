@@ -96,6 +96,30 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
             }}
           />
         ))}
+
+        {/* Data Streams */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-px bg-gradient-to-b from-transparent via-doulia-lime to-transparent h-48"
+              style={{
+                left: `${15 + i * 18}%`,
+                top: '-20%'
+              }}
+              animate={{
+                top: ['-20%', '120%'],
+                opacity: [0, 0.4, 0]
+              }}
+              transition={{
+                duration: 6 + Math.random() * 4,
+                repeat: Infinity,
+                ease: "linear",
+                delay: i * 1.5
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="relative z-10 flex flex-col h-full">
