@@ -27,6 +27,7 @@ import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
 import AboutFAQPage from './components/AboutFAQPage';
 import ROISimulator from './components/ROISimulator';
+import { Analytics } from '@vercel/analytics/react';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -754,6 +755,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <Analytics />
     </div>
   );
 }
