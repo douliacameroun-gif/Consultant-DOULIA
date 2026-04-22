@@ -19,10 +19,10 @@ import {
   TrendingUp
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { getGeminiResponse } from './services/gemini';
+import { getGeminiResponse, saveAuditToAirtable } from './services/gemini';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Widget } from '@typeform/embed-react';
+import AuditForm, { AuditData } from './components/AuditForm';
 import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
 import AboutFAQPage from './components/AboutFAQPage';
@@ -124,11 +124,26 @@ export default function App() {
   const [showContact, setShowContact] = useState(false);
   const [showROI, setShowROI] = useState(false);
   const [externalUrl, setExternalUrl] = useState<string | null>(null);
+  const [visitorId, setVisitorId] = useState<string>('');
+  const [conversationId, setConversationId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(false);
 
-  const typeformId = "xe2vUwE1";
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let vid = localStorage.getItem('doulia_visitor_id');
+      if (!vid) {
+        vid = 'v_' + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem('doulia_visitor_id', vid);
+      }
+      setVisitorId(vid);
+
+      // Unique Conversation ID for the session
+      const cid = 'chat_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      setConversationId(cid);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -203,9 +218,7 @@ export default function App() {
 
   useEffect(() => {
     scrollToBottom();
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    }
+    // Disabled localStorage saving for chat history as per user request (Save to Airtable instead)
   }, [messages]);
 
   const clearHistory = () => {
@@ -218,6 +231,9 @@ export default function App() {
     setMessages(initialMessage);
     if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);
+      // Generate new conversation ID on clear
+      const cid = 'chat_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      setConversationId(cid);
     }
   };
 
@@ -247,7 +263,7 @@ export default function App() {
         parts: [{ text: m.content }]
       }));
       
-      const response = await getGeminiResponse(userMessage, history);
+      const response = await getGeminiResponse(userMessage, history, visitorId, conversationId);
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
     } catch (err: any) {
       console.error(err);
@@ -280,6 +296,25 @@ export default function App() {
   const openAudit = (code: string | null = null) => {
     setResumeCode(code);
     setShowTypeform(true);
+  };
+
+  const handleAuditSubmit = async (data: AuditData) => {
+    setShowTypeform(false);
+    
+    const summary = `Merci **${data.name}** ! J'ai bien reçu les informations pour **${data.company}**. 
+
+Voici ce que j'ai retenu :
+❶ Ton défi majeur : **${data.challenge === 'service_client' ? 'Gestion des messages clients' : data.challenge === 'admin' ? 'Automatisation administrative' : data.challenge === 'data' ? 'Analyse de données' : 'Besoin de sur-mesure'}**.
+❷ Ton problème : "${data.description.substring(0, 80)}..."
+
+Nos experts vont t'appeler sur WhatsApp au **${data.whatsapp}**.
+
+En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peuvent résoudre ce problème spécifique ?`;
+
+    setMessages(prev => [...prev, { role: 'model', content: summary }]);
+
+    // Save to Airtable
+    await saveAuditToAirtable(data, visitorId);
   };
 
   const openExternalLink = (url: string) => {
@@ -675,33 +710,21 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-doulia-dark w-full max-w-6xl h-full max-h-[850px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden border border-white/10 relative flex flex-col"
+              className="bg-doulia-dark w-full max-w-4xl h-full max-h-[800px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden border border-white/10 relative flex flex-col shadow-2xl"
             >
-              <div className="p-4 sm:p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-doulia-lime/10 rounded-xl text-doulia-lime">
-                    <ClipboardList size={24} />
-                  </div>
-                  <div>
-                    <span className="font-display font-bold text-lg sm:text-xl text-white block">Audit Stratégique</span>
-                    <span className="text-[9px] sm:text-[10px] text-white/40 uppercase tracking-widest font-bold">Analyse de maturité digitale</span>
-                  </div>
-                </div>
+              <div className="absolute top-6 right-6 z-50">
                 <button 
                   onClick={() => setShowTypeform(false)}
-                  className="p-2 sm:p-3 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
+                  className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white"
                 >
-                  <X size={32} />
+                  <X size={24} />
                 </button>
               </div>
-              <div className="flex-1 relative">
-                <Widget 
-                  id={typeformId} 
-                  style={{ width: '100%', height: '100%' }} 
-                  className="my-form" 
-                  hidden={{ resume_chat: resumeCode || '' }}
-                />
-              </div>
+              
+              <AuditForm 
+                onClose={() => setShowTypeform(false)} 
+                onSubmit={handleAuditSubmit}
+              />
             </motion.div>
           </motion.div>
         )}
