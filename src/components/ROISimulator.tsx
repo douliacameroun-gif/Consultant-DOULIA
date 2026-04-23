@@ -134,14 +134,14 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="glass-panel p-5 sm:p-6 rounded-2xl border border-white/10"
+              className="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10"
             >
-              <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-                <Zap className="text-doulia-lime" size={20} />
+              <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
+                <Zap className="text-doulia-lime" size={24} />
                 Vos Données Actuelles
               </h2>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Employees */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -296,10 +296,10 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                 </p>
                 <button 
                   onClick={() => { onClose(); onOpenAudit(); }}
-                  className="w-full py-3 bg-doulia-night text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:scale-[1.01] transition-all shadow-lg text-sm"
+                  className="w-full py-4 bg-doulia-night text-white rounded-xl font-bold flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-xl text-base"
                 >
                   Lancer mon Audit Gratuit
-                  <ArrowRight size={18} />
+                  <ArrowRight size={20} />
                 </button>
               </div>
             </motion.div>

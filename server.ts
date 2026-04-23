@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import Airtable from "airtable";
 import dotenv from "dotenv";
 
@@ -29,21 +29,25 @@ const ADMIN_NUMBER = '237673043127'; // Ton numéro expert (sans + pour certaine
 
 async function sendNotification(title: string, body: string) {
   // On ne bloque jamais le reste de l'application (pas d'await lors de l'appel)
-  console.log(`[DOULIA Alert] Notification préparée : \n📌 ${title}\n📝 ${body}`);
+  console.log(`[Avlytext] Préparation : \n📌 ${title}\n📝 ${body}`);
   
   if (AVLYTEXT_API_KEY) {
     // Un deuxième try-catch interne pour isoler totalement le service Avlytext
     try {
+      const payload = {
+        api_key: AVLYTEXT_API_KEY,
+        phone: ADMIN_NUMBER,
+        text: `🔔 *ALERTE DOULIA*\n\n*${title}*\n\n${body}`
+      };
+
+      console.log(`[Avlytext] Envoi à ${AVLYTEXT_URL} pour ${ADMIN_NUMBER}...`);
+
       const response = await fetch(AVLYTEXT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          api_key: AVLYTEXT_API_KEY,
-          phone: ADMIN_NUMBER,
-          text: `🔔 *ALERTE DOULIA*\n\n*${title}*\n\n${body}`
-        })
+        body: JSON.stringify(payload)
       });
       
       // Vérification du statut HTTP avant de tenter de parser le JSON
@@ -78,6 +82,8 @@ async function sendNotification(title: string, body: string) {
 // Tavily Search Helper
 async function searchWeb(query: string) {
   const apiKey = process.env.TAVILY_API_KEY;
+  console.log(`[Tavily] Tentative de recherche pour : "${query}"`);
+  
   if (!apiKey) {
     console.warn("⚠️ Clé Tavily manquante.");
     return "Recherche web non disponible.";
@@ -93,9 +99,10 @@ async function searchWeb(query: string) {
       })
     });
     const data = await response.json();
+    console.log(`[Tavily] Recherche réussie, ${data.results?.length || 0} résultats.`);
     return JSON.stringify(data.results || []);
   } catch (error) {
-    console.error("Tavily Error:", error);
+    console.error("❌ Tavily Error:", error);
     return "Erreur recherche web.";
   }
 }
@@ -118,57 +125,99 @@ Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'u
 `;
 
 // API Routes
+app.get("/api/debug-config", (req, res) => {
+  res.json({
+    gemini: !!process.env.GEMINI_API_KEY,
+    airtable_key: !!process.env.AIRTABLE_API_KEY,
+    airtable_base: !!process.env.AIRTABLE_BASE_ID,
+    tavily: !!process.env.TAVILY_API_KEY,
+    avlytext: !!process.env.AVLYTEXT_API_KEY,
+    admin_number: ADMIN_NUMBER
+  });
+});
+
 app.post("/api/chat", async (req, res) => {
-  const { message, history, visitorId, conversationId } = req.body;
+  const { message, history, visitorId, conversationId, hasPassedAudit } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
+    console.error("❌ Erreur : Clé GEMINI_API_KEY manquante.");
     return res.status(500).json({ error: "Clé API Gemini manquante côté serveur." });
   }
 
   try {
-    const genAI = new GoogleGenAI({ apiKey }) as any;
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: SYSTEM_INSTRUCTION,
-      tools: [{
-        functionDeclarations: [{
-          name: "searchWeb",
-          description: "Recherche sur le web pour obtenir des informations récentes.",
-          parameters: {
-            type: "object",
-            properties: {
-              query: { type: "string" }
-            },
-            required: ["query"]
-          }
-        }]
-      }]
-    });
-
-    const chat = model.startChat({
-      history: history.map((h: any) => ({
-        role: h.role === 'model' ? 'model' : 'user',
-        parts: h.parts
-      }))
-    });
-
-    let result = await chat.sendMessage(message);
-    let response = result.response;
-    const calls = response.functionCalls ? response.functionCalls() : [];
-
-    if (calls && calls.length > 0) {
-      const toolResponse = await searchWeb(calls[0].args.query as string);
-      result = await chat.sendMessage([{
-        functionResponse: {
-          name: "searchWeb",
-          response: { content: toolResponse }
-        }
-      }]);
-      response = result.response;
+    const ai = new GoogleGenAI({ apiKey });
+    
+    // Instruction dynamique selon le statut de l'audit
+    let dynamicInstruction = SYSTEM_INSTRUCTION;
+    if (hasPassedAudit) {
+      dynamicInstruction += `
+[NOTE CRITIQUE - AUDIT DÉJÀ RÉALISÉ]
+L'utilisateur a DÉJÀ complété son audit. 
+1. NE propose PLUS de passer l'audit.
+2. NE propose PLUS de contacter l'équipe via WhatsApp (car ils vont déjà l'appeler).
+3. Concentre-toi sur le CONSEIL pur, l'explication technique de nos 4 solutions (Connect, Process, Insight, Sur-mesure) ou l'analyse de ses besoins spécifiques basés sur ses questions.
+`;
+    } else {
+      dynamicInstruction += `
+[PHASE DE CLÔTURE ET REDIRECTION - RÈGLES TECHNIQUES STRICTES]
+Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
+Étape 1 : Le Résumé "Format Code" (CRITIQUE). 3 à 5 mots max, AUCUN ESPACE, AUCUN ACCENT, tirets du bas uniquement.
+Étape 2 : L'Affichage des Boutons (Markdown) :
+"[Option 1 : Valider votre dossier d'audit (1 minute)](https://form.typeform.com/to/xe2vUwE1#resume_chat=[RESUME_CODE])"
+"[Option 2 : Discuter avec notre Direction Technique sur WhatsApp](https://wa.me/237673043127?text=Bonjour_Doulia_je_viens_de_discuter_avec_IA_Doulia_Voici_mon_besoin:[RESUME_CODE])"
+`;
     }
 
-    const aiText = response.text();
+    const formattedHistory = (history || []).map((h: any) => ({
+      role: h.role === 'model' ? 'model' : 'user',
+      parts: Array.isArray(h.parts) ? h.parts : [{ text: h.parts }]
+    }));
+
+    const chat = ai.chats.create({
+      model: "gemini-3-flash-preview", 
+      config: {
+        systemInstruction: dynamicInstruction,
+        tools: [{
+          functionDeclarations: [{
+            name: "searchWeb",
+            description: "Recherche sur le web pour obtenir des informations récentes sur le marché camerounais ou l'IA.",
+            parameters: {
+              type: Type.OBJECT,
+              properties: {
+                query: { type: Type.STRING }
+              },
+              required: ["query"]
+            }
+          }]
+        }],
+      },
+      history: formattedHistory
+    });
+
+    console.log(`[IA] Envoi du message : ${message.substring(0, 50)}...`);
+    let result = await chat.sendMessage({ message: message });
+    let aiText = result.text || "";
+    console.log(`[IA] Réponse reçue (${aiText.length} chars)`);
+
+    // Gérer les appels de fonction (Tavily)
+    const calls = result.functionCalls;
+    if (calls && calls.length > 0) {
+      console.log(`[IA] Appel de fonction détecté : ${calls[0].name}`);
+      const toolResponse = await searchWeb(calls[0].args.query as string);
+      
+      const secondResult = await chat.sendMessage({
+        message: [
+          {
+            functionResponse: {
+              name: "searchWeb",
+              response: { content: toolResponse }
+            }
+          }
+        ]
+      });
+      aiText = secondResult.text || "";
+    }
 
     // Save to Airtable (Asynchronously)
     if (base) {
@@ -187,7 +236,7 @@ app.post("/api/chat", async (req, res) => {
             const newVisitor = await base('Visiteurs').create({
               "ID Visiteur": visitorId,
               "Date de première visite": new Date().toISOString(),
-              "Source": req.headers['referer'] || "Web"
+              "Source": "Chat"
             });
             visitorRecordId = newVisitor.id;
           } else {
@@ -242,16 +291,28 @@ app.post("/api/chat", async (req, res) => {
             }
           ]);
           console.log(`[Airtable] Messages sauvegardés avec succès pour ${conversationId}`);
-        } catch (err) {
-          console.error("❌ Erreur Flux Airtable (Chat):", err);
+        } catch (err: any) {
+          console.error("❌ [Airtable Error] Détails complets :", {
+            message: err.message,
+            stack: err.stack,
+            table: err.table,
+            type: err.type
+          });
+          if (err.message && err.message.includes("Could not find table")) {
+            console.error("💡 Astuce : Vérifiez que le nom de la table dans Airtable est exactement celui attendu (ex: 'Visiteurs', 'Conversations', 'Messages').");
+          }
         }
       })();
     }
 
     res.json({ text: aiText });
   } catch (error: any) {
-    console.error("Chat API Error:", error);
-    res.status(500).json({ error: "Erreur lors de la conversation IA." });
+    console.error("❌ Chat API Error Details:", error);
+    res.status(500).json({ 
+      error: "Erreur lors de la conversation IA.",
+      details: error.message,
+      model: "gemini-2.0-flash"
+    });
   }
 });
 
@@ -329,15 +390,22 @@ app.post("/api/audit", async (req, res) => {
       console.log(`[Airtable] Audit et Solution sauvegardés avec succès pour ${visitorId}`);
       
       // Trigger Notification
+      console.log(`[Avlytext] Déclenchement alerte pour : ${auditData.company}`);
       sendNotification(
           `Nouvel Audit: ${auditData.company}`,
           `Prospect: ${auditData.name} - WhatsApp: ${auditData.whatsapp} - Défi: ${auditData.challenge}`
       );
 
       res.json({ success: true });
-    } catch (error) {
-      console.error("❌ Erreur Flux Airtable (Audit):", error);
-      res.status(500).json({ error: "Erreur lors de la sauvegarde de l'audit." });
+    } catch (err: any) {
+      console.error("❌ [Airtable Audit Error] Détails :", {
+        message: err.message,
+        table: err.table
+      });
+      res.status(500).json({ 
+        error: "Erreur lors de la sauvegarde de l'audit.",
+        details: err.message 
+      });
     }
   } else {
     console.warn("⚠️ Base Airtable non initialisée lors de l'audit.");

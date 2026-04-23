@@ -151,38 +151,38 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
           <p className="text-white/70 leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
             Basée à Douala, <strong>DOULIA</strong> accompagne les entreprises camerounaises vers l'IA.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-            <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-              <Zap className="text-doulia-lime mb-1.5 sm:mb-2 sm:w-5 sm:h-5" size={16} />
-              <h4 className="text-white font-bold mb-0.5 text-xs sm:text-sm">Innovation Locale</h4>
-              <p className="text-white/50 text-[10px] sm:text-xs">Solutions pour le marché camerounais.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+              <Zap className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={18} />
+              <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Innovation Locale</h4>
+              <p className="text-white/50 text-xs sm:text-sm">Solutions pour le marché camerounais.</p>
             </div>
-            <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-              <Shield className="text-doulia-lime mb-1.5 sm:mb-2 sm:w-5 sm:h-5" size={16} />
-              <h4 className="text-white font-bold mb-0.5 text-xs sm:text-sm">Confiance</h4>
-              <p className="text-white/50 text-[10px] sm:text-xs">Accompagnement humain de proximité.</p>
+            <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+              <Shield className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={18} />
+              <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Confiance</h4>
+              <p className="text-white/50 text-xs sm:text-sm">Accompagnement humain de proximité.</p>
             </div>
           </div>
         </section>
 
         {/* Section Nos Valeurs */}
-        <section className="max-w-3xl mx-auto bg-doulia-lime/5 p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-doulia-lime/20">
-          <h3 className="text-lg sm:text-xl font-black text-doulia-lime mb-4 sm:mb-6 flex items-center gap-2">
-            <Globe size={18} className="sm:w-5 sm:h-5" />
+        <section className="max-w-3xl mx-auto bg-doulia-lime/5 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] border border-doulia-lime/20">
+          <h3 className="text-xl sm:text-2xl font-black text-doulia-lime mb-5 sm:mb-8 flex items-center gap-3">
+            <Globe size={22} className="sm:w-6 sm:h-6" />
             LE DOULIA LOVE
           </h3>
-          <p className="text-white/80 italic mb-4 sm:mb-6 text-sm sm:text-base">
+          <p className="text-white/80 italic mb-5 sm:mb-8 text-base sm:text-lg leading-relaxed">
             "Notre mission est de faire grandir les entreprises camerounaises en rendant la technologie accessible, chaleureuse et extrêmement pragmatique."
           </p>
-          <ul className="space-y-2 sm:space-y-3">
+          <ul className="space-y-3 sm:space-y-4">
             {[
               "Empathie profonde envers les entrepreneurs",
               "Réactivité maximale sur WhatsApp",
               "Transparence totale sur les coûts",
               "Excellence technique bilingue"
             ].map((item, i) => (
-              <li key={i} className="flex items-center gap-2 sm:gap-3 text-white/70 text-[12px] sm:text-sm">
-                <CheckCircle2 size={14} className="text-doulia-lime shrink-0 sm:w-4 sm:h-4" />
+              <li key={i} className="flex items-center gap-3 sm:gap-4 text-white/70 text-sm sm:text-base">
+                <CheckCircle2 size={16} className="text-doulia-lime shrink-0 sm:w-5 sm:h-5" />
                 {item}
               </li>
             ))}

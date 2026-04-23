@@ -285,7 +285,9 @@ export default function App() {
         parts: [{ text: m.content }]
       }));
       
-      const response = await getGeminiResponse(userMessage, history, visitorId, conversationId);
+      const hasPassedAudit = !!submittedAuditData;
+      
+      const response = await getGeminiResponse(userMessage, history, visitorId, conversationId, hasPassedAudit);
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
       if (response) speak(response);
     } catch (err: any) {
@@ -452,24 +454,24 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   
                   <button 
                     onClick={() => { setShowROI(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-3 group"
+                    className="w-full text-left p-4 text-base font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-4 group"
                   >
-                    <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
-                      <TrendingUp size={18} />
+                    <div className="p-2 bg-doulia-lime/20 rounded-lg text-doulia-lime">
+                      <TrendingUp size={20} />
                     </div>
                     <span className="flex-1">Simulateur de Gains</span>
-                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
                   <button 
                     onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
+                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 group"
                   >
-                    <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
-                      <Layers size={18} />
+                    <div className="p-2 bg-doulia-lime/10 rounded-lg text-doulia-lime">
+                      <Layers size={20} />
                     </div>
                     <span className="flex-1">Nos Solutions</span>
-                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
                   <button 
@@ -554,7 +556,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   )}
                 </div>
                 <div className={cn(
-                  "p-3 sm:p-5 rounded-[1.25rem] text-[13px] sm:text-base leading-relaxed shadow-lg transition-all duration-300",
+                  "p-4 sm:p-6 rounded-[1.5rem] text-[15px] sm:text-[17px] leading-relaxed shadow-xl transition-all duration-300",
                   msg.role === 'user' 
                     ? "bg-doulia-lime/10 text-white rounded-tr-none border border-doulia-lime/20" 
                     : "bg-white/[0.03] text-[#f3f4f6] border border-white/5 rounded-tl-none backdrop-blur-md"
@@ -692,20 +694,20 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   onClick={toggleListening}
                   disabled={isLoading}
                   className={cn(
-                    "p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all border border-white/10",
+                    "p-3.5 sm:p-4 rounded-lg sm:rounded-2xl transition-all border border-white/10",
                     isListening 
                       ? "bg-doulia-lime text-doulia-night" 
                       : "bg-white/5 text-white/70 hover:bg-white/10"
                   )}
                 >
-                  <Mic size={18} />
+                  <Mic size={20} />
                 </button>
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-doulia-lime text-doulia-night p-2.5 sm:p-3 rounded-lg sm:rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+                  className="bg-doulia-lime text-doulia-night p-3.5 sm:p-4 rounded-lg sm:rounded-2xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 shadow-lg"
                 >
-                  <Send size={18} />
+                  <Send size={20} />
                 </button>
               </div>
             </div>

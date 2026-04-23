@@ -233,28 +233,28 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
             className="space-y-6"
           >
             {step.type === 'welcome' && (
-              <div className="space-y-4">
-                <div className="p-2 bg-doulia-lime/10 rounded-xl w-fit text-doulia-lime">
-                  <ClipboardList size={24} />
+              <div className="space-y-6">
+                <div className="p-3 bg-doulia-lime/10 rounded-xl w-fit text-doulia-lime">
+                  <ClipboardList size={28} />
                 </div>
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-display leading-tight">
+                  <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display leading-tight">
                     {step.title}
                   </h2>
-                  <p className="text-base text-white/60 mb-1">
+                  <p className="text-lg text-white/60 mb-2">
                     {step.subtitle}
                   </p>
                 </div>
-                <div className="pt-2">
-                  <div className="text-lg font-medium text-white mb-6 border-l-2 border-doulia-lime pl-4">
+                <div className="pt-4">
+                  <div className="text-xl font-medium text-white mb-8 border-l-4 border-doulia-lime pl-6 leading-relaxed">
                     {currentQuestionText}
                   </div>
                   <button
                     onClick={handleNext}
-                    className="group bg-doulia-lime text-doulia-night px-6 py-3 rounded-xl font-bold text-base flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-doulia-lime/20"
+                    className="group bg-doulia-lime text-doulia-night px-8 py-4 rounded-2xl font-bold text-lg flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-doulia-lime/30"
                   >
                     C'est parti !
-                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -323,27 +323,27 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 gap-4">
                   {step.options?.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => handleChoice(option.value)}
-                      className="group relative flex items-center gap-4 p-4 bg-white/5 border-2 border-white/10 rounded-xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.98]"
+                      className="group relative flex items-center gap-5 p-6 bg-white/5 border-2 border-white/10 rounded-2xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.99] shadow-lg"
                     >
                       {option.icon && (
-                        <div className="p-2 bg-white/5 rounded-lg text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
-                          {option.icon}
+                        <div className="p-3 bg-white/5 rounded-xl text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
+                          {React.cloneElement(option.icon as any, { size: 24 })}
                         </div>
                       )}
                       <div className="flex-1">
-                        <p className="text-base font-bold text-white group-hover:text-doulia-lime transition-colors">
+                        <p className="text-lg font-bold text-white group-hover:text-doulia-lime transition-colors">
                           {option.text}
                         </p>
                       </div>
-                      <div className="w-6 h-6 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-doulia-lime transition-all shrink-0">
-                        <div className="w-3 h-3 rounded-full bg-doulia-lime scale-0 group-hover:scale-100 transition-transform shadow-[0_0_10px_rgba(190,242,100,0.5)]" />
+                      <div className="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-doulia-lime transition-all shrink-0">
+                        <div className="w-4 h-4 rounded-full bg-doulia-lime scale-0 group-hover:scale-100 transition-transform shadow-[0_0_15px_rgba(190,242,100,0.6)]" />
                       </div>
-                      <div className="absolute top-2 right-4 text-[8px] font-black text-white/5 uppercase">Option {option.id}</div>
+                      <div className="absolute top-3 right-6 text-[10px] font-black text-white/5 uppercase">Option {option.id}</div>
                     </button>
                   ))}
                 </div>

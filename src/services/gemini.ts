@@ -2,13 +2,14 @@ export const getGeminiResponse = async (
   message: string, 
   history: { role: "user" | "model", parts: { text: string }[] }[], 
   visitorId?: string,
-  conversationId?: string
+  conversationId?: string,
+  hasPassedAudit: boolean = false
 ) => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history, visitorId, conversationId })
+      body: JSON.stringify({ message, history, visitorId, conversationId, hasPassedAudit })
     });
 
     if (!response.ok) {
