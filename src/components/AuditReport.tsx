@@ -180,8 +180,8 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
                   Optimisation du Temps Réel
                 </h3>
                 
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[300px] w-full relative" style={{ minWidth: 0 }}>
+                  <ResponsiveContainer width="99%" height="100%">
                     <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
@@ -226,8 +226,8 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
                   Projection Économique (FCFA)
                 </h3>
                 
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[300px] w-full relative" style={{ minWidth: 0 }}>
+                  <ResponsiveContainer width="99%" height="100%">
                     <AreaChart data={savingsProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="areaManual" x1="0" y1="0" x2="0" y2="1">

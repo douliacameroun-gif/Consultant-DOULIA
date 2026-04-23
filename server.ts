@@ -264,7 +264,7 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
             console.log(`[Airtable] Nouveau visiteur détecté: ${visitorId}`);
             const newVisitor = await base('Visiteurs').create({
               "ID Visiteur": visitorId,
-              "Date de première visite": new Date().toISOString(),
+              "Date de première visite": new Date().toISOString().split('T')[0],
               "Source": "Chat"
             });
             visitorRecordId = newVisitor.id;
@@ -283,7 +283,7 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
             const newConv = await base('Conversations').create({
               "ID Chat": conversationId,
               "Visiteur": [visitorRecordId],
-              "Date de début": new Date().toISOString(),
+              "Date de début": new Date().toISOString().split('T')[0],
               "Statut": "En cours"
             });
             conversationRecordId = newConv.id;
@@ -379,7 +379,7 @@ app.post("/api/audit", async (req, res) => {
           "Nom Prénom": auditData.name,
           "WhatsApp": auditData.whatsapp,
           "Entreprise": auditData.company,
-          "Date de première visite": new Date().toISOString(),
+          "Date de première visite": new Date().toISOString().split('T')[0],
           "Source": req.headers['referer'] || "Audit"
         });
         visitorRecordId = newVisitor.id;
@@ -398,7 +398,7 @@ app.post("/api/audit", async (req, res) => {
           "Volume de messages": parseInt(auditData.volume || "0"),
           "Priorité": auditData.priority === 'haute' ? 'Haute' : 
                       auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
-          "Date de soumission": new Date().toISOString()
+          "Date de soumission": new Date().toISOString().split('T')[0]
         });
 
         // 3. Create Suggested Solution (Table 5)

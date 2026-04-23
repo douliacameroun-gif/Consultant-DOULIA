@@ -105,7 +105,7 @@ Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'u
           } else {
             const nv = await base('Visiteurs').create({ 
               "ID Visiteur": visitorId, 
-              "Date de première visite": new Date().toISOString(), 
+              "Date de première visite": new Date().toISOString().split('T')[0], 
               "Source": "Chat" 
             });
             visitorRid = nv.id;
@@ -120,7 +120,7 @@ Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'u
             const nc = await base('Conversations').create({ 
               "ID Chat": conversationId, 
               "Visiteur": [visitorRid], 
-              "Date de début": new Date().toISOString(), 
+              "Date de début": new Date().toISOString().split('T')[0], 
               "Statut": "En cours" 
             });
             convRid = nc.id;

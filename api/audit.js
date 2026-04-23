@@ -56,7 +56,7 @@ export default async function handler(req, res) {
           "Nom Prénom": auditData.name,
           "WhatsApp": auditData.whatsapp,
           "Entreprise": auditData.company,
-          "Date de première visite": new Date().toISOString(),
+          "Date de première visite": new Date().toISOString().split('T')[0],
           "Source": req.headers['referer'] || "Audit"
         });
         visitorRecordId = newVisitor.id;
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
         "Volume de messages": parseInt(auditData.volume || "0"),
         "Priorité": auditData.priority === 'haute' ? 'Haute' : 
                     auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
-        "Date de soumission": new Date().toISOString()
+        "Date de soumission": new Date().toISOString().split('T')[0]
       });
 
       // 3. Create Suggested Solution
