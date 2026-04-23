@@ -112,44 +112,44 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
       </div>
 
       <div className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
-        <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+        <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl sm:text-5xl font-display font-bold text-doulia-lime mb-4 uppercase tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-display font-bold text-doulia-lime mb-3 uppercase tracking-tight">
                 Simulateur de Gains IA
               </h1>
-              <p className="text-white/60 text-lg max-w-2xl mx-auto">
-                Estimez l'impact concret de l'Intelligence Artificielle sur votre rentabilité et libérez le potentiel de votre entreprise.
+              <p className="text-white/60 text-base max-w-xl mx-auto">
+                Estimez l'impact concret de l'Intelligence Artificielle sur votre rentabilité.
               </p>
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Inputs Section */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10"
+              className="glass-panel p-5 sm:p-6 rounded-2xl border border-white/10"
             >
-              <h2 className="text-xl font-bold mb-8 flex items-center gap-2">
-                <Zap className="text-doulia-lime" size={24} />
+              <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                <Zap className="text-doulia-lime" size={20} />
                 Vos Données Actuelles
               </h2>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Employees */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <Users size={16} className="text-doulia-lime" />
+                    <label className="text-xs font-medium text-white/80 flex items-center gap-2">
+                      <Users size={14} className="text-doulia-lime" />
                       Nombre d'employés
                     </label>
-                    <span className="text-doulia-lime font-bold">{employees}</span>
+                    <span className="text-doulia-lime font-bold text-sm">{employees}</span>
                   </div>
                   <input
                     type="range"
@@ -157,18 +157,18 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                     max="100"
                     value={employees}
                     onChange={(e) => setEmployees(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
+                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
                   />
                 </div>
 
                 {/* Hourly Rate */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <DollarSign size={16} className="text-doulia-lime" />
-                      Coût horaire moyen (FCFA)
+                    <label className="text-xs font-medium text-white/80 flex items-center gap-2">
+                      <DollarSign size={14} className="text-doulia-lime" />
+                      Coût horaire (FCFA)
                     </label>
-                    <span className="text-doulia-lime font-bold">{formatCurrency(hourlyRate)}</span>
+                    <span className="text-doulia-lime font-bold text-sm">{formatCurrency(hourlyRate)}</span>
                   </div>
                   <input
                     type="range"
@@ -177,18 +177,18 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                     step="500"
                     value={hourlyRate}
                     onChange={(e) => setHourlyRate(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
+                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
                   />
                 </div>
 
                 {/* Repetitive Hours */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <Clock size={16} className="text-doulia-lime" />
-                      Heures/jour sur tâches répétitives
+                    <label className="text-xs font-medium text-white/80 flex items-center gap-2">
+                      <Clock size={14} className="text-doulia-lime" />
+                      Heures répétitives/jour
                     </label>
-                    <span className="text-doulia-lime font-bold">{repetitiveHours}h</span>
+                    <span className="text-doulia-lime font-bold text-sm">{repetitiveHours}h</span>
                   </div>
                   <input
                     type="range"
@@ -197,18 +197,18 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                     step="0.5"
                     value={repetitiveHours}
                     onChange={(e) => setRepetitiveHours(parseFloat(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
+                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
                   />
                 </div>
 
                 {/* Missed Leads */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <Target size={16} className="text-doulia-lime" />
-                      Prospects manqués / mois
+                    <label className="text-xs font-medium text-white/80 flex items-center gap-2">
+                      <Target size={14} className="text-doulia-lime" />
+                      Prospects manqués/mois
                     </label>
-                    <span className="text-doulia-lime font-bold">{missedLeads}</span>
+                    <span className="text-doulia-lime font-bold text-sm">{missedLeads}</span>
                   </div>
                   <input
                     type="range"
@@ -216,18 +216,18 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                     max="200"
                     value={missedLeads}
                     onChange={(e) => setMissedLeads(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
+                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
                   />
                 </div>
 
                 {/* Lead Value */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-white/80 flex items-center gap-2">
-                      <BarChart3 size={16} className="text-doulia-lime" />
-                      Valeur moyenne d'un prospect (FCFA)
+                    <label className="text-xs font-medium text-white/80 flex items-center gap-2">
+                      <BarChart3 size={14} className="text-doulia-lime" />
+                      Valeur prospect (FCFA)
                     </label>
-                    <span className="text-doulia-lime font-bold">{formatCurrency(leadValue)}</span>
+                    <span className="text-doulia-lime font-bold text-sm">{formatCurrency(leadValue)}</span>
                   </div>
                   <input
                     type="range"
@@ -236,7 +236,7 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                     step="5000"
                     value={leadValue}
                     onChange={(e) => setLeadValue(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
+                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-doulia-lime"
                   />
                 </div>
               </div>
@@ -247,59 +247,59 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="space-y-6"
+              className="space-y-4"
             >
-              <div className="glass-panel p-8 rounded-3xl border border-doulia-lime/20 bg-doulia-lime/5 relative overflow-hidden group">
+              <div className="glass-panel p-6 sm:p-7 rounded-2xl border border-doulia-lime/20 bg-doulia-lime/5 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <TrendingUp size={120} />
+                  <TrendingUp size={80} />
                 </div>
                 
-                <h3 className="text-white/60 text-sm font-bold uppercase tracking-widest mb-2">Gain Annuel Estimé</h3>
-                <div className="text-4xl sm:text-6xl font-display font-bold text-doulia-lime mb-4">
+                <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Gain Annuel Estimé</h3>
+                <div className="text-3xl sm:text-5xl font-display font-bold text-doulia-lime mb-2">
                   {formatCurrency(results.yearlyGain)}
                 </div>
-                <p className="text-white/40 text-sm italic">
-                  *Basé sur une optimisation prudente de vos processus par l'IA DOULIA.
+                <p className="text-white/40 text-[10px] italic">
+                  *Basé sur une optimisation prudente de vos processus.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="glass-panel p-6 rounded-2xl border border-white/5">
-                  <Clock className="text-doulia-lime mb-3" size={24} />
-                  <div className="text-2xl font-bold">{results.monthlyTimeSaved}h</div>
-                  <div className="text-white/50 text-xs uppercase tracking-wider">Temps libéré / mois</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="glass-panel p-4 rounded-xl border border-white/5">
+                  <Clock className="text-doulia-lime mb-2" size={20} />
+                  <div className="text-lg font-bold">{results.monthlyTimeSaved}h</div>
+                  <div className="text-white/50 text-[10px] uppercase tracking-wider">Temps libéré / mois</div>
                 </div>
                 
-                <div className="glass-panel p-6 rounded-2xl border border-white/5">
-                  <DollarSign className="text-doulia-lime mb-3" size={24} />
-                  <div className="text-2xl font-bold">{formatCurrency(results.monthlyMoneySaved)}</div>
-                  <div className="text-white/50 text-xs uppercase tracking-wider">Économie salaire / mois</div>
+                <div className="glass-panel p-4 rounded-xl border border-white/5">
+                  <DollarSign className="text-doulia-lime mb-2" size={20} />
+                  <div className="text-lg font-bold">{formatCurrency(results.monthlyMoneySaved)}</div>
+                  <div className="text-white/50 text-[10px] uppercase tracking-wider">Économie / mois</div>
                 </div>
 
-                <div className="glass-panel p-6 rounded-2xl border border-white/5">
-                  <PieChart className="text-doulia-lime mb-3" size={24} />
-                  <div className="text-2xl font-bold">{formatCurrency(results.recoveredRevenue)}</div>
-                  <div className="text-white/50 text-xs uppercase tracking-wider">Revenu récupéré / mois</div>
+                <div className="glass-panel p-4 rounded-xl border border-white/5">
+                  <PieChart className="text-doulia-lime mb-2" size={20} />
+                  <div className="text-lg font-bold">{formatCurrency(results.recoveredRevenue)}</div>
+                  <div className="text-white/50 text-[10px] uppercase tracking-wider">Revenu récupéré / mois</div>
                 </div>
 
-                <div className="glass-panel p-6 rounded-2xl border border-white/5">
-                  <TrendingUp className="text-doulia-lime mb-3" size={24} />
-                  <div className="text-2xl font-bold">{formatCurrency(results.totalMonthlyGain)}</div>
-                  <div className="text-white/50 text-xs uppercase tracking-wider">Gain total / mois</div>
+                <div className="glass-panel p-4 rounded-xl border border-white/5">
+                  <TrendingUp className="text-doulia-lime mb-2" size={20} />
+                  <div className="text-lg font-bold">{formatCurrency(results.totalMonthlyGain)}</div>
+                  <div className="text-white/50 text-[10px] uppercase tracking-wider">Gain total / mois</div>
                 </div>
               </div>
 
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-doulia-lime to-emerald-500 text-doulia-night">
-                <h4 className="text-xl font-bold mb-2">Prêt à transformer ces chiffres en réalité ?</h4>
-                <p className="text-doulia-night/80 mb-6 font-medium">
-                  Nos experts sont prêts à auditer votre entreprise gratuitement pour valider ces estimations.
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-doulia-lime to-emerald-500 text-doulia-night">
+                <h4 className="text-lg font-bold mb-1">Prêt à transformer ces chiffres ?</h4>
+                <p className="text-xs text-doulia-night/80 mb-4 font-medium">
+                  Nos experts valident ces estimations gratuitement.
                 </p>
                 <button 
                   onClick={() => { onClose(); onOpenAudit(); }}
-                  className="w-full py-4 bg-doulia-night text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl"
+                  className="w-full py-3 bg-doulia-night text-white rounded-lg font-bold flex items-center justify-center gap-2 hover:scale-[1.01] transition-all shadow-lg text-sm"
                 >
                   Lancer mon Audit Gratuit
-                  <ArrowRight size={20} />
+                  <ArrowRight size={18} />
                 </button>
               </div>
             </motion.div>

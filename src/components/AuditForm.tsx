@@ -222,7 +222,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
         />
       </div>
 
-      <div className="flex-1 flex flex-col justify-center p-6 sm:p-12">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -230,41 +230,41 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="space-y-8"
+            className="space-y-6"
           >
             {step.type === 'welcome' && (
-              <div className="space-y-6">
-                <div className="p-3 bg-doulia-lime/10 rounded-2xl w-fit text-doulia-lime">
-                  <ClipboardList size={32} />
+              <div className="space-y-4">
+                <div className="p-2 bg-doulia-lime/10 rounded-xl w-fit text-doulia-lime">
+                  <ClipboardList size={24} />
                 </div>
                 <div>
-                  <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display leading-tight">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-display leading-tight">
                     {step.title}
                   </h2>
-                  <p className="text-lg text-white/60 mb-2">
+                  <p className="text-base text-white/60 mb-1">
                     {step.subtitle}
                   </p>
                 </div>
-                <div className="pt-4">
-                  <div className="text-xl font-medium text-white mb-8 border-l-2 border-doulia-lime pl-6">
+                <div className="pt-2">
+                  <div className="text-lg font-medium text-white mb-6 border-l-2 border-doulia-lime pl-4">
                     {currentQuestionText}
                   </div>
                   <button
                     onClick={handleNext}
-                    className="group bg-doulia-lime text-doulia-night px-8 py-4 rounded-2xl font-bold text-lg flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-doulia-lime/20"
+                    className="group bg-doulia-lime text-doulia-night px-6 py-3 rounded-xl font-bold text-base flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-doulia-lime/20"
                   >
                     C'est parti !
-                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
             )}
 
             {(step.type === 'text' || step.type === 'tel' || step.type === 'textarea') && (
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <span className="text-doulia-lime font-bold tracking-widest text-xs uppercase">Question {currentStep}</span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight font-display">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <span className="text-doulia-lime font-bold tracking-widest text-[10px] uppercase">Question {currentStep}</span>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight font-display">
                     {currentQuestionText}
                   </h2>
                 </div>
@@ -276,7 +276,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder={step.placeholder}
                       autoFocus
-                      className="w-full bg-white/5 border-2 border-white/10 rounded-2xl p-6 text-xl text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all h-40 resize-none"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-4 text-lg text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all h-32 resize-none"
                     />
                   ) : (
                     <input
@@ -286,74 +286,74 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                       onKeyDown={(e) => e.key === 'Enter' && handleNext()}
                       placeholder={step.placeholder}
                       autoFocus
-                      className="w-full bg-white/5 border-2 border-white/10 rounded-2xl p-6 text-xl text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-4 text-lg text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all"
                     />
                   )}
-                  <div className="absolute right-4 bottom-4 flex items-center gap-2 text-white/20 text-xs font-bold pointer-events-none group-focus-within:text-doulia-lime/40 transition-colors">
-                    Pressez Entrée <ChevronRight size={14} />
+                  <div className="absolute right-4 bottom-4 flex items-center gap-2 text-white/20 text-[10px] font-bold pointer-events-none group-focus-within:text-doulia-lime/40 transition-colors">
+                    Pressez Entrée <ChevronRight size={12} />
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-8">
+                <div className="flex justify-between items-center pt-4">
                   <button 
                     onClick={handlePrev}
-                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors py-2"
+                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors py-1 text-sm"
                   >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={18} />
                     Retour
                   </button>
                   <button
                     onClick={handleNext}
                     disabled={!inputValue.trim()}
-                    className="bg-doulia-lime text-doulia-night px-8 py-3 rounded-xl font-bold flex items-center gap-2 disabled:opacity-30 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-doulia-lime/10"
+                    className="bg-doulia-lime text-doulia-night px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 disabled:opacity-30 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-doulia-lime/10 text-sm"
                   >
                     Suivant
-                    <ChevronRight size={18} />
+                    <ChevronRight size={16} />
                   </button>
                 </div>
               </div>
             )}
 
             {step.type === 'choice' && (
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <span className="text-doulia-lime font-bold tracking-widest text-xs uppercase">Choix stratégique</span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight font-display">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <span className="text-doulia-lime font-bold tracking-widest text-[10px] uppercase">Choix stratégique</span>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight font-display">
                     {currentQuestionText}
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-3">
                   {step.options?.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => handleChoice(option.value)}
-                      className="group relative flex items-center gap-4 p-5 sm:p-6 bg-white/5 border-2 border-white/10 rounded-2xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.98]"
+                      className="group relative flex items-center gap-4 p-4 bg-white/5 border-2 border-white/10 rounded-xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.98]"
                     >
                       {option.icon && (
-                        <div className="p-3 bg-white/5 rounded-xl text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
+                        <div className="p-2 bg-white/5 rounded-lg text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
                           {option.icon}
                         </div>
                       )}
                       <div className="flex-1">
-                        <p className="text-lg font-bold text-white group-hover:text-doulia-lime transition-colors">
+                        <p className="text-base font-bold text-white group-hover:text-doulia-lime transition-colors">
                           {option.text}
                         </p>
                       </div>
-                      <div className="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-doulia-lime transition-all">
-                        <div className="w-4 h-4 rounded-full bg-doulia-lime scale-0 group-hover:scale-100 transition-transform shadow-[0_0_10px_rgba(190,242,100,0.5)]" />
+                      <div className="w-6 h-6 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-doulia-lime transition-all shrink-0">
+                        <div className="w-3 h-3 rounded-full bg-doulia-lime scale-0 group-hover:scale-100 transition-transform shadow-[0_0_10px_rgba(190,242,100,0.5)]" />
                       </div>
-                      <div className="absolute top-4 right-6 text-[10px] font-black text-white/5 uppercase">Option {option.id}</div>
+                      <div className="absolute top-2 right-4 text-[8px] font-black text-white/5 uppercase">Option {option.id}</div>
                     </button>
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center pt-4">
+                <div className="flex justify-between items-center pt-2">
                   <button 
                     onClick={handlePrev}
-                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm"
                   >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={18} />
                     Retour
                   </button>
                 </div>

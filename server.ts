@@ -12,12 +12,76 @@ app.use(express.json());
 const PORT = 3000;
 
 // Airtable Setup
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID!);
+const AIRTABLE_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID;
+
+if (!AIRTABLE_KEY || !AIRTABLE_BASE) {
+  console.warn("⚠️ ATTENTION : Paramètres Airtable manquants (AIRTABLE_API_KEY ou AIRTABLE_BASE_ID). La sauvegarde est désactivée.");
+}
+
+const base = AIRTABLE_KEY ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE!) : null;
+
+// --- Système de Notification WhatsApp (via Avlytext) ---
+// Documentation : https://avlytext.com/api
+const AVLYTEXT_API_KEY = process.env.AVLYTEXT_API_KEY;
+const AVLYTEXT_URL = process.env.AVLYTEXT_URL || 'https://api.avlytext.com/external/whatsapp/send';
+const ADMIN_NUMBER = '237673043127'; // Ton numéro expert (sans + pour certaines API)
+
+async function sendNotification(title: string, body: string) {
+  // On ne bloque jamais le reste de l'application (pas d'await lors de l'appel)
+  console.log(`[DOULIA Alert] Notification préparée : \n📌 ${title}\n📝 ${body}`);
+  
+  if (AVLYTEXT_API_KEY) {
+    // Un deuxième try-catch interne pour isoler totalement le service Avlytext
+    try {
+      const response = await fetch(AVLYTEXT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          api_key: AVLYTEXT_API_KEY,
+          phone: ADMIN_NUMBER,
+          text: `🔔 *ALERTE DOULIA*\n\n*${title}*\n\n${body}`
+        })
+      });
+      
+      // Vérification du statut HTTP avant de tenter de parser le JSON
+      if (!response.ok) {
+        console.error(`⚠️ Avlytext a répondu avec une erreur (${response.status}). Vérifiez votre solde.` );
+        return;
+      }
+
+      const textResponse = await response.text();
+      try {
+        const result = JSON.parse(textResponse);
+        console.log("✅ Réponse Avlytext (JSON):", result);
+        // Si le solde est insuffisant, Avlytext renvoie souvent un code de succès HTTP mais un message d'erreur dans le corps JSON
+        if (result.status === 'error' || result.error) {
+          console.error("⚠️ Erreur logique Avlytext (Probable solde à 0 FCFA):", result);
+        }
+      } catch (e) {
+        console.log("✅ Réponse Avlytext (Texte):", textResponse);
+      }
+      
+      console.log("✅ Processus de notification Avlytext terminé.");
+    } catch (err) {
+      // Si Avlytext est en panne ou si la connexion échoue, on log simplement sans crasher
+      console.error("❌ Échec critique de connexion à Avlytext (Ignoré pour préserver l'app):", err);
+    }
+  } else {
+    console.warn("⚠️ Avlytext non configuré. Alerte réelle envoyée au log serveur uniquement.");
+  }
+}
+// -------------------------------------------------
 
 // Tavily Search Helper
 async function searchWeb(query: string) {
   const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) return "Recherche web non disponible (clé manquante).";
+  if (!apiKey) {
+    console.warn("⚠️ Clé Tavily manquante.");
+    return "Recherche web non disponible.";
+  }
   try {
     const response = await fetch('https://api.tavily.com/search', {
       method: 'POST',
@@ -107,9 +171,11 @@ app.post("/api/chat", async (req, res) => {
     const aiText = response.text();
 
     // Save to Airtable (Asynchronously)
-    if (process.env.AIRTABLE_API_KEY && process.env.AIRTABLE_BASE_ID) {
+    if (base) {
       (async () => {
         try {
+          console.log(`[Airtable] Tentative de sauvegarde message pour Visitor: ${visitorId}`);
+          
           // 1. Ensure Visitor exists
           const visitors = await base('Visiteurs').select({
             filterByFormula: `{ID Visiteur} = '${visitorId}'`
@@ -117,6 +183,7 @@ app.post("/api/chat", async (req, res) => {
 
           let visitorRecordId;
           if (visitors.length === 0) {
+            console.log(`[Airtable] Nouveau visiteur détecté: ${visitorId}`);
             const newVisitor = await base('Visiteurs').create({
               "ID Visiteur": visitorId,
               "Date de première visite": new Date().toISOString(),
@@ -134,6 +201,7 @@ app.post("/api/chat", async (req, res) => {
 
           let conversationRecordId;
           if (conversations.length === 0) {
+            console.log(`[Airtable] Nouvelle conversation: ${conversationId}`);
             const newConv = await base('Conversations').create({
               "ID Chat": conversationId,
               "Visiteur": [visitorRecordId],
@@ -173,8 +241,9 @@ app.post("/api/chat", async (req, res) => {
               }
             }
           ]);
+          console.log(`[Airtable] Messages sauvegardés avec succès pour ${conversationId}`);
         } catch (err) {
-          console.error("Airtable Flow Error:", err);
+          console.error("❌ Erreur Flux Airtable (Chat):", err);
         }
       })();
     }
@@ -186,11 +255,19 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+// --- Route DLR Avlytext ---
+app.post("/api/avlytext-dlr", (req, res) => {
+  console.log("📥 [DLR Avlytext Local] Rapport reçu :", req.body);
+  res.status(200).send("DLR Received");
+});
+// --------------------------
+
 app.post("/api/audit", async (req, res) => {
   const { auditData, visitorId } = req.body;
 
-  if (process.env.AIRTABLE_API_KEY && process.env.AIRTABLE_BASE_ID) {
+  if (base) {
     try {
+      console.log(`[Airtable] Reception d'un audit pour Visitor: ${visitorId}`);
       // 1. Find Visitor
       const visitors = await base('Visiteurs').select({
         filterByFormula: `{ID Visiteur} = '${visitorId}'`
@@ -199,6 +276,7 @@ app.post("/api/audit", async (req, res) => {
       let visitorRecordId;
       if (visitors.length > 0) {
         visitorRecordId = visitors[0].id;
+        console.log(`[Airtable] Mise à jour du visiteur existant: ${visitorId}`);
         // Update visitor info from audit
         await base('Visiteurs').update(visitorRecordId, {
           "Nom Prénom": auditData.name,
@@ -206,6 +284,7 @@ app.post("/api/audit", async (req, res) => {
           "Entreprise": auditData.company
         });
       } else {
+        console.log(`[Airtable] Création d'un visiteur pour l'audit: ${visitorId}`);
         const newVisitor = await base('Visiteurs').create({
           "ID Visiteur": visitorId,
           "Nom Prénom": auditData.name,
@@ -218,6 +297,7 @@ app.post("/api/audit", async (req, res) => {
       }
 
       // 2. Create Audit
+      console.log(`[Airtable] Création de l'audit pour ${visitorId}`);
       const audit = await base('Audits').create({
         "ID Audit": `audit_${Date.now()}`,
         "Visiteur": [visitorRecordId],
@@ -246,12 +326,21 @@ app.post("/api/audit", async (req, res) => {
         "Note de pertinence": 9 // Default high relevance for audit-generated solutions
       });
 
+      console.log(`[Airtable] Audit et Solution sauvegardés avec succès pour ${visitorId}`);
+      
+      // Trigger Notification
+      sendNotification(
+          `Nouvel Audit: ${auditData.company}`,
+          `Prospect: ${auditData.name} - WhatsApp: ${auditData.whatsapp} - Défi: ${auditData.challenge}`
+      );
+
       res.json({ success: true });
     } catch (error) {
-      console.error("Airtable Audit Flow Error:", error);
+      console.error("❌ Erreur Flux Airtable (Audit):", error);
       res.status(500).json({ error: "Erreur lors de la sauvegarde de l'audit." });
     }
   } else {
+    console.warn("⚠️ Base Airtable non initialisée lors de l'audit.");
     res.json({ success: true, warning: "Airtable non configuré" });
   }
 });

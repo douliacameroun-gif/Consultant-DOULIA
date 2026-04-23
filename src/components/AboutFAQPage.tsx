@@ -125,12 +125,12 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
       <div className="relative z-10 flex flex-col h-full">
         <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-white/5 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-doulia-lime/20 rounded-xl text-doulia-lime">
-            <Info size={24} className="sm:w-6 sm:h-6" />
+          <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
+            <Info size={18} className="sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-xl font-black text-white tracking-tight">À Propos & FAQ</h2>
-            <p className="text-[10px] sm:text-[10px] text-white/40 uppercase tracking-widest font-bold">Tout savoir sur DOULIA</p>
+            <h2 className="text-lg sm:text-lg font-black text-white tracking-tight">À Propos & FAQ</h2>
+            <p className="text-[10px] sm:text-[10px] text-white/40 uppercase tracking-widest font-bold">L'univers DOULIA</p>
           </div>
         </div>
         <button 
@@ -141,26 +141,26 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8 sm:space-y-12 pb-20">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 pb-16">
         {/* Section À Propos */}
-        <section className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-4 sm:mb-6">
-            <div className="w-6 sm:w-8 h-1 bg-doulia-lime rounded-full"></div>
-            <h3 className="text-lg sm:text-2xl font-bold text-white">L'Expertise IA au Cameroun</h3>
+        <section className="max-w-2xl mx-auto">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+            <div className="w-4 sm:w-6 h-1 bg-doulia-lime rounded-full"></div>
+            <h3 className="text-base sm:text-xl font-bold text-white">Innovation au Cameroun</h3>
           </div>
-          <p className="text-white/70 leading-relaxed text-sm sm:text-lg mb-4 sm:mb-6">
-            Basée au cœur de Douala, <strong>DOULIA</strong> est le partenaire stratégique des entreprises camerounaises qui souhaitent franchir le cap de la modernité. Nous croyons que l'Intelligence Artificielle n'est pas réservée aux géants de la tech, mais doit être un levier de croissance pour chaque PME locale.
+          <p className="text-white/70 leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
+            Basée à Douala, <strong>DOULIA</strong> accompagne les entreprises camerounaises vers l'IA.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-              <Zap className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={20} />
-              <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Innovation Locale</h4>
-              <p className="text-white/50 text-[12px] sm:text-sm">Des solutions pensées pour le climat des affaires au Cameroun.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+              <Zap className="text-doulia-lime mb-1.5 sm:mb-2 sm:w-5 sm:h-5" size={16} />
+              <h4 className="text-white font-bold mb-0.5 text-xs sm:text-sm">Innovation Locale</h4>
+              <p className="text-white/50 text-[10px] sm:text-xs">Solutions pour le marché camerounais.</p>
             </div>
-            <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-              <Shield className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={20} />
-              <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Confiance & Proximité</h4>
-              <p className="text-white/50 text-[12px] sm:text-sm">Un accompagnement humain de Douala à Yaoundé.</p>
+            <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+              <Shield className="text-doulia-lime mb-1.5 sm:mb-2 sm:w-5 sm:h-5" size={16} />
+              <h4 className="text-white font-bold mb-0.5 text-xs sm:text-sm">Confiance</h4>
+              <p className="text-white/50 text-[10px] sm:text-xs">Accompagnement humain de proximité.</p>
             </div>
           </div>
         </section>

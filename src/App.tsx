@@ -16,13 +16,16 @@ import {
   Layers,
   HelpCircle,
   Trash2,
-  TrendingUp
+  TrendingUp,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getGeminiResponse, saveAuditToAirtable } from './services/gemini';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import AuditForm, { AuditData } from './components/AuditForm';
+import AuditReport from './components/AuditReport';
 import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
 import AboutFAQPage from './components/AboutFAQPage';
@@ -123,6 +126,25 @@ export default function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showROI, setShowROI] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const [submittedAuditData, setSubmittedAuditData] = useState<AuditData | null>(null);
+
+  const speak = (text: string) => {
+    if (!isVoiceEnabled || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    
+    const cleanText = text.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1').replace(/[#*`]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    
+    const voices = window.speechSynthesis.getVoices();
+    const frenchVoice = voices.find(v => v.lang.startsWith('fr') && v.name.includes('Google')) || voices.find(v => v.lang.startsWith('fr'));
+    if (frenchVoice) utterance.voice = frenchVoice;
+    
+    window.speechSynthesis.speak(utterance);
+  };
   const [externalUrl, setExternalUrl] = useState<string | null>(null);
   const [visitorId, setVisitorId] = useState<string>('');
   const [conversationId, setConversationId] = useState<string>('');
@@ -265,6 +287,7 @@ export default function App() {
       
       const response = await getGeminiResponse(userMessage, history, visitorId, conversationId);
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
+      if (response) speak(response);
     } catch (err: any) {
       console.error(err);
       setError(userMessage);
@@ -300,6 +323,7 @@ export default function App() {
 
   const handleAuditSubmit = async (data: AuditData) => {
     setShowTypeform(false);
+    setSubmittedAuditData(data);
     
     const summary = `Merci **${data.name}** ! J'ai bien reçu les informations pour **${data.company}**. 
 
@@ -385,6 +409,17 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                 className="hidden sm:block text-[11px] font-bold text-white/60 hover:text-doulia-lime transition-all px-3 py-2 rounded-lg hover:bg-white/5"
               >
                 Contact
+              </button>
+
+              <button 
+                onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+                title={isVoiceEnabled ? "Désactiver la voix" : "Activer la voix (TTS)"}
+                className={cn(
+                    "hidden sm:flex p-2 rounded-lg transition-all border border-white/5",
+                    isVoiceEnabled ? "bg-doulia-lime/20 text-doulia-lime border-doulia-lime/30 shadow-[0_0_10px_rgba(190,242,100,0.2)]" : "text-white/30 hover:text-white"
+                )}
+              >
+                {isVoiceEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
               </button>
               
               {/* Bouton Audit mis en perspective (Call to Action) */}
@@ -698,6 +733,12 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
         )}
         {showROI && (
           <ROISimulator onClose={() => setShowROI(false)} onOpenAudit={() => openAudit()} />
+        )}
+        {submittedAuditData && (
+          <AuditReport 
+            data={submittedAuditData} 
+            onClose={() => setSubmittedAuditData(null)} 
+          />
         )}
         {showTypeform && (
           <motion.div 
