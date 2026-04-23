@@ -70,7 +70,7 @@ const WhatsAppDemo: React.FC = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-[url('https://i.postimg.cc/L47tdhws/DOULIA-LOGO-FOND-VERT.jpg')] bg-repeat bg-center bg-fixed custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-[url('https://i.postimg.cc/G2N4nHLm/Capture-d-e-cran-2026-04-23-a-3-25-49-PM.png')] bg-cover bg-center custom-scrollbar">
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div

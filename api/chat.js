@@ -1,10 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import Airtable from "airtable";
 
-// Initialisation Airtable
+// Initialisation Airtable avec fallback ID Base fourni par l'utilisateur
 const AIRTABLE_KEY = process.env.AIRTABLE_API_KEY;
-const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID;
-const base = (AIRTABLE_KEY && AIRTABLE_BASE) ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE) : null;
+const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID || "appB3GIl261KpVz3F";
+const base = AIRTABLE_KEY ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE) : null;
 
 // Tavily Search Helper
 async function searchWeb(query) {
@@ -95,18 +95,45 @@ Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'u
     if (base && visitorId && conversationId) {
       (async () => {
         try {
-          // Logique Airtable identique à server.ts
+          console.log(`[Airtable] Sauvegarde chat pour ${visitorId}`);
+          // Logique Airtable robuste
           const visitors = await base('Visiteurs').select({ filterByFormula: `{ID Visiteur} = '${visitorId}'` }).firstPage();
-          let visitorRid = visitors.length > 0 ? visitors[0].id : (await base('Visiteurs').create({ "ID Visiteur": visitorId, "Date de première visite": new Date().toISOString(), "Source": "Chat" })).id;
+          let visitorRid;
+          
+          if (visitors.length > 0) {
+            visitorRid = visitors[0].id;
+          } else {
+            const nv = await base('Visiteurs').create({ 
+              "ID Visiteur": visitorId, 
+              "Date de première visite": new Date().toISOString(), 
+              "Source": "Chat" 
+            });
+            visitorRid = nv.id;
+          }
 
           const convs = await base('Conversations').select({ filterByFormula: `{ID Chat} = '${conversationId}'` }).firstPage();
-          let convRid = convs.length > 0 ? convs[0].id : (await base('Conversations').create({ "ID Chat": conversationId, "Visiteur": [visitorRid], "Date de début": new Date().toISOString(), "Statut": "En cours" })).id;
+          let convRid;
+          
+          if (convs.length > 0) {
+            convRid = convs[0].id;
+          } else {
+            const nc = await base('Conversations').create({ 
+              "ID Chat": conversationId, 
+              "Visiteur": [visitorRid], 
+              "Date de début": new Date().toISOString(), 
+              "Statut": "En cours" 
+            });
+            convRid = nc.id;
+          }
 
           await base('Messages').create([
-            { fields: { "ID Message": `msg_u_${Date.now()}`, "Conversation": [convRid], "Rôle": "Utilisateur", "Contenu": message, "Timestamp": new Date().toISOString() } },
-            { fields: { "ID Message": `msg_ia_${Date.now()}`, "Conversation": [convRid], "Rôle": "IA", "Contenu": aiText, "Timestamp": new Date().toISOString() } }
+            { fields: { "ID Message": `msg_u_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`, "Conversation": [convRid], "Rôle": "Utilisateur", "Contenu": message, "Timestamp": new Date().toISOString() } },
+            { fields: { "ID Message": `msg_ia_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`, "Conversation": [convRid], "Rôle": "IA", "Contenu": aiText, "Timestamp": new Date().toISOString() } }
           ]);
-        } catch (e) { console.error("Airtable Error in Serverless:", e); }
+          console.log("✅ Airtable Save Success");
+        } catch (e) { 
+          console.error("❌ Airtable Error in Serverless Handler:", e.message); 
+        }
       })();
     }
 

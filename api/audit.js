@@ -1,8 +1,8 @@
 import Airtable from "airtable";
 
 const AIRTABLE_KEY = process.env.AIRTABLE_API_KEY;
-const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID;
-const base = (AIRTABLE_KEY && AIRTABLE_BASE) ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE) : null;
+const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID || "appB3GIl261KpVz3F";
+const base = AIRTABLE_KEY ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE) : null;
 
 const AVLYTEXT_API_KEY = process.env.AVLYTEXT_API_KEY;
 const AVLYTEXT_URL = process.env.AVLYTEXT_URL || 'https://api.avlytext.com/external/whatsapp/send';
@@ -36,6 +36,7 @@ export default async function handler(req, res) {
 
   if (base) {
     try {
+      console.log(`[Airtable] Sauvegarde audit pour Visitor: ${visitorId}`);
       // 1. Find Visitor
       const visitors = await base('Visiteurs').select({
         filterByFormula: `{ID Visiteur} = '${visitorId}'`
@@ -63,13 +64,13 @@ export default async function handler(req, res) {
 
       // 2. Create Audit
       const audit = await base('Audits').create({
-        "ID Audit": `audit_${Date.now()}`,
+        "ID Audit": `audit_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
         "Visiteur": [visitorRecordId],
         "Défi Majeur": auditData.challenge === 'service_client' ? 'Service Client' : 
                        auditData.challenge === 'admin' ? 'Admin' : 
                        auditData.challenge === 'data' ? 'Data' : 'Sur-Mesure',
         "Description du Problème": auditData.description,
-        "Logiciels Actuels": auditData.software || auditData.existingTools,
+        "Logiciels Actuels": (auditData.software || auditData.existingTools || "").substring(0, 250),
         "Volume de messages": parseInt(auditData.volume || "0"),
         "Priorité": auditData.priority === 'haute' ? 'Haute' : 
                     auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
@@ -84,13 +85,14 @@ export default async function handler(req, res) {
       else suggestedProduct = "Sur-Mesure";
 
       await base('Solutions suggérées').create({
-        "ID Solution": `sol_${Date.now()}`,
+        "ID Solution": `sol_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
         "Audit": [audit.id],
         "Produit": suggestedProduct,
         "Note de pertinence": 9
       });
       
       // Trigger Notification
+      console.log(`[Avlytext] Alerte audit : ${auditData.company}`);
       sendNotification(
           `Nouvel Audit: ${auditData.company}`,
           `Prospect: ${auditData.name} - WhatsApp: ${auditData.whatsapp} - Défi: ${auditData.challenge}`

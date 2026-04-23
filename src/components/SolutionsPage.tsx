@@ -123,13 +123,13 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
         <X size={24} className="hidden sm:block" />
       </button>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
         {/* Packs Solutions */}
-        <section className="py-6 sm:py-16 px-4 bg-white/[0.02] mt-12 sm:mt-16">
+        <section className="section-compact mt-12 sm:mt-16">
         <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8 sm:mb-16">
-              <h2 className="text-xl sm:text-4xl font-display font-bold mb-2 sm:mb-3">Nos Packs <span className="text-gradient">Solutions</span></h2>
-              <p className="text-doulia-lime/50 uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-[8px] sm:text-xs">L'EXCELLENCE OPÉRATIONNELLE</p>
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="mb-2 sm:mb-3 uppercase">Nos Packs <span className="text-gradient">Solutions</span></h2>
+              <p className="text-doulia-lime/50 uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-[8px] sm:text-[10px]">L'excellence opérationnelle au Cameroun</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -147,10 +147,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 transition-opacity duration-500"></div>
                 </div>
-                <div className="p-5 sm:p-6 flex-1 flex flex-col relative z-10">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2">1. DOULIA Connect</h3>
-                  <p className="text-white/60 italic mb-3 sm:mb-4 text-xs sm:text-sm">Le service client qui ne dort jamais.</p>
-                  <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <div className="p-4 sm:p-5 flex-1 flex flex-col relative z-10">
+                  <h3 className="font-display font-bold text-doulia-lime mb-1 sm:mb-2 italic">1. DOULIA Connect</h3>
+                  <p className="text-white/50 italic mb-3 sm:mb-4 text-[11px] sm:text-xs">Le service client intelligent.</p>
+                  <ul className="space-y-2.5 sm:space-y-3 mb-5 sm:mb-6 flex-1">
                     {[
                       { label: "Automatisation 24/7", desc: "Assistants WhatsApp." },
                       { label: "Lead Scoring", desc: "Qualification automatique." },
@@ -164,10 +164,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Connect")}
-                  className="mt-auto w-full py-3.5 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="btn-modern-glass w-full"
                 >
-                  Détails
-                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                  Découvrir
+                  <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.article>
@@ -186,10 +186,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 transition-opacity duration-500"></div>
               </div>
-                <div className="p-5 sm:p-6 flex-1 flex flex-col relative z-10">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2">2. DOULIA Process</h3>
-                  <p className="text-white/60 italic mb-3 sm:mb-4 text-xs sm:text-sm">L'automatisation de la routine.</p>
-                  <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <div className="p-4 sm:p-5 flex-1 flex flex-col relative z-10">
+                  <h3 className="font-display font-bold text-doulia-lime mb-1 sm:mb-2 italic">2. DOULIA Process</h3>
+                  <p className="text-white/50 italic mb-3 sm:mb-4 text-[11px] sm:text-xs">L'automatisation sans faille.</p>
+                  <ul className="space-y-2.5 sm:space-y-3 mb-5 sm:mb-6 flex-1">
                     {[
                       { label: "Audit Processus", desc: "Identifier les freins." },
                       { label: "Agents IA", desc: "Suppression saisies." },
@@ -203,10 +203,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Process")}
-                  className="mt-auto w-full py-3.5 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="btn-modern-glass w-full"
                 >
-                  Détails
-                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                  Découvrir
+                  <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.article>
@@ -225,10 +225,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-doulia-night via-doulia-night/50 to-transparent opacity-80 transition-opacity duration-500"></div>
               </div>
-                <div className="p-5 sm:p-6 flex-1 flex flex-col relative z-10">
-                  <h3 className="text-xl sm:text-2xl font-display font-bold text-doulia-lime mb-1 sm:mb-2">3. DOULIA Insight</h3>
-                  <p className="text-white/60 italic mb-3 sm:mb-4 text-xs sm:text-sm">Décisions basées sur la donnée.</p>
-                  <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <div className="p-4 sm:p-5 flex-1 flex flex-col relative z-10">
+                  <h3 className="font-display font-bold text-doulia-lime mb-1 sm:mb-2 italic">3. DOULIA Insight</h3>
+                  <p className="text-white/50 italic mb-3 sm:mb-4 text-[11px] sm:text-xs">Décisions hautement stratégiques.</p>
+                  <ul className="space-y-2.5 sm:space-y-3 mb-5 sm:mb-6 flex-1">
                     {[
                       { label: "Data Mining", desc: "Valeur des fichiers Excel." },
                       { label: "Algorithmes", desc: "Anticiper la demande." },
@@ -242,10 +242,10 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
                   </ul>
                 <button 
                   onClick={() => onSelectSolution("DOULIA Insight")}
-                  className="mt-auto w-full py-3.5 bg-doulia-lime/10 hover:bg-doulia-lime text-doulia-lime hover:text-doulia-night rounded-xl font-bold text-sm transition-all border border-doulia-lime/20 flex items-center justify-center gap-2 group/btn"
+                  className="btn-modern-glass w-full"
                 >
-                  Détails
-                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                  Découvrir
+                  <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.article>

@@ -6,6 +6,9 @@ import Airtable from "airtable";
 import dotenv from "dotenv";
 
 dotenv.config();
+console.log("🚀 [Server] Environnement chargé.");
+console.log("🔑 [Airtable] Key status:", !!process.env.AIRTABLE_API_KEY ? "CONFIGURÉ" : "MANQUANT");
+console.log("🔑 [Airtable] Base ID status:", !!process.env.AIRTABLE_BASE_ID ? "CONFIGURÉ" : "MANQUANT");
 
 const app = express();
 app.use(express.json());
@@ -13,13 +16,13 @@ const PORT = 3000;
 
 // Airtable Setup
 const AIRTABLE_KEY = process.env.AIRTABLE_API_KEY;
-const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_BASE = process.env.AIRTABLE_BASE_ID || "appB3GIl261KpVz3F";
 
-if (!AIRTABLE_KEY || !AIRTABLE_BASE) {
-  console.warn("⚠️ ATTENTION : Paramètres Airtable manquants (AIRTABLE_API_KEY ou AIRTABLE_BASE_ID). La sauvegarde est désactivée.");
+if (!AIRTABLE_KEY) {
+  console.warn("⚠️ ATTENTION : AIRTABLE_API_KEY manquante. La sauvegarde est désactivée.");
 }
 
-const base = AIRTABLE_KEY ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE!) : null;
+const base = AIRTABLE_KEY ? new Airtable({ apiKey: AIRTABLE_KEY }).base(AIRTABLE_BASE) : null;
 
 // --- Système de Notification WhatsApp (via Avlytext) ---
 // Documentation : https://avlytext.com/api
@@ -125,6 +128,31 @@ Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'u
 `;
 
 // API Routes
+app.get("/api/airtable-status", async (req, res) => {
+  if (!base) {
+    return res.json({ status: "error", message: "Airtable is not configured (missing keys)" });
+  }
+  
+  try {
+    // Try to list tables (check if base is accessible)
+    await base('Visiteurs').select({ maxRecords: 1 }).firstPage();
+    res.json({ 
+      status: "ok", 
+      message: "Connection confirmed", 
+      config: {
+        base_id: AIRTABLE_BASE?.substring(0, 5) + "...",
+        api_key_set: !!AIRTABLE_KEY
+      }
+    });
+  } catch (err: any) {
+    res.status(500).json({ 
+      status: "error", 
+      message: err.message,
+      suggestion: "Vérifiez que le nom de la table 'Visiteurs' existe exactement ainsi dans votre base Airtable."
+    });
+  }
+});
+
 app.get("/api/debug-config", (req, res) => {
   res.json({
     gemini: !!process.env.GEMINI_API_KEY,
@@ -224,7 +252,8 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
       (async () => {
         try {
           console.log(`[Airtable] Tentative de sauvegarde message pour Visitor: ${visitorId}`);
-          
+          if (!base) throw new Error("Airtable Base not initialized");
+
           // 1. Ensure Visitor exists
           const visitors = await base('Visiteurs').select({
             filterByFormula: `{ID Visiteur} = '${visitorId}'`
@@ -271,7 +300,7 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
           await base('Messages').create([
             {
               fields: {
-                "ID Message": `msg_u_${Date.now()}`,
+                "ID Message": `msg_u_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
                 "Conversation": [conversationRecordId],
                 "Rôle": "Utilisateur",
                 "Contenu": message,
@@ -281,7 +310,7 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
             },
             {
               fields: {
-                "ID Message": `msg_ia_${Date.now()}`,
+                "ID Message": `msg_ia_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
                 "Conversation": [conversationRecordId],
                 "Rôle": "IA",
                 "Contenu": aiText,
@@ -290,16 +319,15 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
               }
             }
           ]);
-          console.log(`[Airtable] Messages sauvegardés avec succès pour ${conversationId}`);
+          console.log(`[Airtable] ✅ Messages sauvegardés avec succès pour ${conversationId}`);
         } catch (err: any) {
-          console.error("❌ [Airtable Error] Détails complets :", {
-            message: err.message,
-            stack: err.stack,
-            table: err.table,
-            type: err.type
-          });
+          console.error("❌ [Airtable Error] Détails :");
+          console.error("- Message:", err.message);
+          console.error("- Table/Action:", err.table || "Unknown");
+          if (err.statusCode) console.error("- Statut HTTP:", err.statusCode);
+          
           if (err.message && err.message.includes("Could not find table")) {
-            console.error("💡 Astuce : Vérifiez que le nom de la table dans Airtable est exactement celui attendu (ex: 'Visiteurs', 'Conversations', 'Messages').");
+            console.error("💡 Astuce : Vérifiez vos noms de tables (Visiteurs, Conversations, Messages, Audits, Solutions suggérées).");
           }
         }
       })();
@@ -357,37 +385,37 @@ app.post("/api/audit", async (req, res) => {
         visitorRecordId = newVisitor.id;
       }
 
-      // 2. Create Audit
-      console.log(`[Airtable] Création de l'audit pour ${visitorId}`);
-      const audit = await base('Audits').create({
-        "ID Audit": `audit_${Date.now()}`,
-        "Visiteur": [visitorRecordId],
-        "Défi Majeur": auditData.challenge === 'service_client' ? 'Service Client' : 
-                       auditData.challenge === 'admin' ? 'Admin' : 
-                       auditData.challenge === 'data' ? 'Data' : 'Sur-Mesure',
-        "Description du Problème": auditData.description,
-        "Logiciels Actuels": auditData.software || auditData.existingTools,
-        "Volume de messages": parseInt(auditData.volume || "0"),
-        "Priorité": auditData.priority === 'haute' ? 'Haute' : 
-                    auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
-        "Date de soumission": new Date().toISOString()
-      });
+        // Create Audit
+        console.log(`[Airtable] Création de l'audit pour ${visitorId}`);
+        const audit = await base('Audits').create({
+          "ID Audit": `audit_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
+          "Visiteur": [visitorRecordId],
+          "Défi Majeur": auditData.challenge === 'service_client' ? 'Service Client' : 
+                         auditData.challenge === 'admin' ? 'Admin' : 
+                         auditData.challenge === 'data' ? 'Data' : 'Sur-Mesure',
+          "Description du Problème": auditData.description,
+          "Logiciels Actuels": (auditData.software || auditData.existingTools || "").substring(0, 250),
+          "Volume de messages": parseInt(auditData.volume || "0"),
+          "Priorité": auditData.priority === 'haute' ? 'Haute' : 
+                      auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
+          "Date de soumission": new Date().toISOString()
+        });
 
-      // 3. Create Suggested Solution (Table 5)
-      let suggestedProduct = "";
-      if (auditData.challenge === 'service_client') suggestedProduct = "Connect";
-      else if (auditData.challenge === 'admin') suggestedProduct = "Process";
-      else if (auditData.challenge === 'data') suggestedProduct = "Insight";
-      else suggestedProduct = "Sur-Mesure";
+        // 3. Create Suggested Solution (Table 5)
+        let suggestedProduct = "";
+        if (auditData.challenge === 'service_client') suggestedProduct = "Connect";
+        else if (auditData.challenge === 'admin') suggestedProduct = "Process";
+        else if (auditData.challenge === 'data') suggestedProduct = "Insight";
+        else suggestedProduct = "Sur-Mesure";
 
-      await base('Solutions suggérées').create({
-        "ID Solution": `sol_${Date.now()}`,
-        "Audit": [audit.id],
-        "Produit": suggestedProduct,
-        "Note de pertinence": 9 // Default high relevance for audit-generated solutions
-      });
+        await base('Solutions suggérées').create({
+          "ID Solution": `sol_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
+          "Audit": [audit.id],
+          "Produit": suggestedProduct,
+          "Note de pertinence": 9 
+        });
 
-      console.log(`[Airtable] Audit et Solution sauvegardés avec succès pour ${visitorId}`);
+        console.log(`[Airtable] ✅ Audit et Solution sauvegardés avec succès pour ${visitorId}`);
       
       // Trigger Notification
       console.log(`[Avlytext] Déclenchement alerte pour : ${auditData.company}`);

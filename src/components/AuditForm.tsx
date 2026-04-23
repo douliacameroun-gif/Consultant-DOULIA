@@ -238,23 +238,23 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                   <ClipboardList size={28} />
                 </div>
                 <div>
-                  <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display leading-tight">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 font-display leading-tight">
                     {step.title}
                   </h2>
-                  <p className="text-lg text-white/60 mb-2">
+                  <p className="text-base text-white/60 mb-2">
                     {step.subtitle}
                   </p>
                 </div>
                 <div className="pt-4">
-                  <div className="text-xl font-medium text-white mb-8 border-l-4 border-doulia-lime pl-6 leading-relaxed">
+                  <div className="text-lg font-medium text-white mb-6 border-l-4 border-doulia-lime pl-6 leading-relaxed">
                     {currentQuestionText}
                   </div>
                   <button
                     onClick={handleNext}
-                    className="group bg-doulia-lime text-doulia-night px-8 py-4 rounded-2xl font-bold text-lg flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-doulia-lime/30"
+                    className="group bg-doulia-lime text-doulia-night px-6 py-3 rounded-xl font-bold text-base flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-doulia-lime/30"
                   >
                     C'est parti !
-                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -264,7 +264,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <span className="text-doulia-lime font-bold tracking-widest text-[10px] uppercase">Question {currentStep}</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight font-display">
+                  <h2 className="text-lg sm:text-xl font-bold text-white leading-tight font-display">
                     {currentQuestionText}
                   </h2>
                 </div>
@@ -276,7 +276,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder={step.placeholder}
                       autoFocus
-                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-4 text-lg text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all h-32 resize-none"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-3 text-base text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all h-28 resize-none"
                     />
                   ) : (
                     <input
@@ -286,7 +286,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                       onKeyDown={(e) => e.key === 'Enter' && handleNext()}
                       placeholder={step.placeholder}
                       autoFocus
-                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-4 text-lg text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-xl p-3 text-base text-white placeholder:text-white/20 focus:border-doulia-lime focus:outline-none transition-all"
                     />
                   )}
                   <div className="absolute right-4 bottom-4 flex items-center gap-2 text-white/20 text-[10px] font-bold pointer-events-none group-focus-within:text-doulia-lime/40 transition-colors">
@@ -318,7 +318,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <span className="text-doulia-lime font-bold tracking-widest text-[10px] uppercase">Choix stratégique</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight font-display">
+                  <h2 className="text-lg sm:text-xl font-bold text-white leading-tight font-display">
                     {currentQuestionText}
                   </h2>
                 </div>
@@ -328,15 +328,15 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                     <button
                       key={option.id}
                       onClick={() => handleChoice(option.value)}
-                      className="group relative flex items-center gap-5 p-6 bg-white/5 border-2 border-white/10 rounded-2xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.99] shadow-lg"
+                      className="group relative flex items-center gap-4 p-4 bg-white/5 border-2 border-white/10 rounded-xl hover:bg-white/10 hover:border-doulia-lime/50 text-left transition-all active:scale-[0.99] shadow-lg"
                     >
                       {option.icon && (
-                        <div className="p-3 bg-white/5 rounded-xl text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
-                          {React.cloneElement(option.icon as any, { size: 24 })}
+                        <div className="p-2.5 bg-white/5 rounded-lg text-white/40 group-hover:bg-doulia-lime/10 group-hover:text-doulia-lime transition-all">
+                          {React.cloneElement(option.icon as any, { size: 20 })}
                         </div>
                       )}
                       <div className="flex-1">
-                        <p className="text-lg font-bold text-white group-hover:text-doulia-lime transition-colors">
+                        <p className="text-sm font-bold text-white group-hover:text-doulia-lime transition-colors">
                           {option.text}
                         </p>
                       </div>

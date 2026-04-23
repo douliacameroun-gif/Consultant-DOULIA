@@ -128,6 +128,12 @@ export default function App() {
   const [showROI, setShowROI] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [submittedAuditData, setSubmittedAuditData] = useState<AuditData | null>(null);
+  const [isAuditCompleted, setIsAuditCompleted] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('doulia_audit_completed') === 'true';
+    }
+    return false;
+  });
 
   const speak = (text: string) => {
     if (!isVoiceEnabled || !window.speechSynthesis) return;
@@ -285,7 +291,7 @@ export default function App() {
         parts: [{ text: m.content }]
       }));
       
-      const hasPassedAudit = !!submittedAuditData;
+      const hasPassedAudit = isAuditCompleted || !!submittedAuditData;
       
       const response = await getGeminiResponse(userMessage, history, visitorId, conversationId, hasPassedAudit);
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
@@ -326,6 +332,8 @@ export default function App() {
   const handleAuditSubmit = async (data: AuditData) => {
     setShowTypeform(false);
     setSubmittedAuditData(data);
+    setIsAuditCompleted(true);
+    localStorage.setItem('doulia_audit_completed', 'true');
     
     const summary = `Merci **${data.name}** ! J'ai bien reçu les informations pour **${data.company}**. 
 
@@ -390,7 +398,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
             <div className="flex items-center gap-3 sm:gap-4">
               <button 
                 onClick={() => setShowROI(true)}
-                className="hidden sm:block text-[11px] font-bold text-doulia-lime border border-doulia-lime/30 px-3 py-2 rounded-lg hover:bg-doulia-lime/10 transition-all"
+                className="hidden sm:block text-[11px] font-bold text-doulia-lime border border-doulia-lime/20 px-3 py-2 rounded-lg hover:bg-doulia-lime/10 transition-all"
               >
                 Simulateur ROI
               </button>
@@ -427,9 +435,9 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
               {/* Bouton Audit mis en perspective (Call to Action) */}
               <button 
                 onClick={() => openAudit()}
-                className="flex text-[10px] sm:text-xs font-black text-doulia-night bg-doulia-lime px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(190,242,100,0.4)] items-center gap-1 active:scale-95 animate-[pulse_3s_ease-in-out_infinite]"
+                className="btn-modern-primary animate-[pulse_4s_ease-in-out_infinite]"
               >
-                <Activity size={12} className="animate-bounce" />
+                <Activity size={14} className="animate-bounce" />
                 <span className="hidden xs:inline">Audit IA</span>
                 <span className="xs:hidden">Audit</span>
               </button>
@@ -694,20 +702,20 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   onClick={toggleListening}
                   disabled={isLoading}
                   className={cn(
-                    "p-3.5 sm:p-4 rounded-lg sm:rounded-2xl transition-all border border-white/10",
+                    "p-3 sm:p-3.5 rounded-xl transition-all border border-white/10",
                     isListening 
                       ? "bg-doulia-lime text-doulia-night" 
                       : "bg-white/5 text-white/70 hover:bg-white/10"
                   )}
                 >
-                  <Mic size={20} />
+                  <Mic size={18} />
                 </button>
                 <button
                   onClick={() => handleSend()}
                   disabled={isLoading || !input.trim()}
-                  className="bg-doulia-lime text-doulia-night p-3.5 sm:p-4 rounded-lg sm:rounded-2xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 shadow-lg"
+                  className="bg-doulia-lime text-doulia-night p-3 sm:p-3.5 rounded-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 shadow-lg shadow-doulia-lime/20"
                 >
-                  <Send size={20} />
+                  <Send size={18} />
                 </button>
               </div>
             </div>

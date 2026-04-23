@@ -141,23 +141,23 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 pb-16">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 pb-16 custom-scrollbar">
         {/* Section À Propos */}
-        <section className="max-w-2xl mx-auto">
+        <section className="max-w-2xl mx-auto section-compact">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
             <div className="w-4 sm:w-6 h-1 bg-doulia-lime rounded-full"></div>
-            <h3 className="text-base sm:text-xl font-bold text-white">Innovation au Cameroun</h3>
+            <h3 className="text-white">Innovation au Cameroun</h3>
           </div>
           <p className="text-white/70 leading-relaxed text-xs sm:text-base mb-3 sm:mb-4">
             Basée à Douala, <strong>DOULIA</strong> accompagne les entreprises camerounaises vers l'IA.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <div className="card-compact bg-white/5 rounded-xl border border-white/10">
               <Zap className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={18} />
               <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Innovation Locale</h4>
               <p className="text-white/50 text-xs sm:text-sm">Solutions pour le marché camerounais.</p>
             </div>
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+            <div className="card-compact bg-white/5 rounded-xl border border-white/10">
               <Shield className="text-doulia-lime mb-2 sm:mb-3 sm:w-6 sm:h-6" size={18} />
               <h4 className="text-white font-bold mb-1 text-sm sm:text-base">Confiance</h4>
               <p className="text-white/50 text-xs sm:text-sm">Accompagnement humain de proximité.</p>
@@ -165,12 +165,12 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
           </div>
         </section>
 
-        {/* Section Nos Valeurs */}
-        <section className="max-w-3xl mx-auto bg-doulia-lime/5 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] border border-doulia-lime/20">
-          <h3 className="text-xl sm:text-2xl font-black text-doulia-lime mb-5 sm:mb-8 flex items-center gap-3">
+        {/* SectionNos Valeurs */}
+        <section className="max-w-3xl mx-auto bg-doulia-lime/5 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-doulia-lime/20">
+          <h2 className="text-doulia-lime mb-5 sm:mb-6 flex items-center gap-3 italic">
             <Globe size={22} className="sm:w-6 sm:h-6" />
             LE DOULIA LOVE
-          </h3>
+          </h2>
           <p className="text-white/80 italic mb-5 sm:mb-8 text-base sm:text-lg leading-relaxed">
             "Notre mission est de faire grandir les entreprises camerounaises en rendant la technologie accessible, chaleureuse et extrêmement pragmatique."
           </p>
@@ -190,21 +190,21 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
         </section>
 
         {/* Section FAQ */}
-        <section className="max-w-3xl mx-auto">
+        <section className="max-w-3xl mx-auto section-compact">
           <div className="flex items-center gap-3 mb-6 sm:mb-8">
             <div className="w-6 sm:w-8 h-1 bg-doulia-lime rounded-full"></div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white">Questions Fréquentes</h3>
+            <h3>Questions Fréquentes</h3>
           </div>
           <div className="space-y-3 sm:space-y-4">
             {faqs.map((faq, index) => (
               <div 
                 key={index}
-                className="p-4 sm:p-6 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 hover:border-doulia-lime/30 transition-colors group"
+                className="card-compact bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 hover:border-doulia-lime/30 transition-colors group"
               >
-                <h4 className="text-white font-bold mb-2 sm:mb-3 flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
+                <h3 className="text-white mb-2 sm:mb-3 flex items-center gap-2 sm:gap-3">
                   <HelpCircle size={16} className="text-doulia-lime sm:w-[18px] sm:h-[18px]" />
                   {faq.question}
-                </h4>
+                </h3>
                 <p className="text-white/50 text-[12px] sm:text-sm leading-relaxed ml-6 sm:ml-7">
                   {faq.answer}
                 </p>
@@ -214,16 +214,16 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
         </section>
 
         {/* Footer Contact */}
-        <section className="max-w-3xl mx-auto text-center py-8">
-          <p className="text-white/40 text-sm mb-4">Besoin d'une réponse plus spécifique ?</p>
+        <section className="max-w-3xl mx-auto text-center py-6 sm:py-8">
+          <p className="text-white/40 text-xs mb-4">Besoin d'une réponse plus spécifique ?</p>
           <a 
             href="https://wa.me/237673043127" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full transition-all font-bold"
+            className="btn-modern-glass inline-flex"
           >
-            <MessageSquare size={18} />
-            Contactez-nous directement
+            <MessageSquare size={16} />
+            Contactez-nous
           </a>
         </section>
       </div>

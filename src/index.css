@@ -14,13 +14,108 @@
 
 @layer base {
   body {
-    @apply bg-doulia-night text-white font-sans overflow-x-hidden;
+    @apply bg-doulia-night text-white font-sans overflow-x-hidden antialiased selection:bg-doulia-lime/30;
   }
+
+  /* Reduire taille des titres globaux */
+  h1 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight font-display; }
+  h2 { @apply text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight font-display; }
+  h3 { @apply text-lg sm:text-xl lg:text-2xl font-bold tracking-tight font-display; }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/[0.02] backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+    @apply bg-white/[0.04] backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.6)];
+  }
+
+  /* Compact section styling */
+  .section-compact {
+    @apply py-6 sm:py-10 lg:py-14 max-w-6xl mx-auto px-4;
+  }
+
+  .card-compact {
+    @apply p-4 sm:p-5 lg:p-6;
+  }
+
+  /* Refined Button System */
+  .btn-modern,
+  .btn-modern-primary,
+  .btn-modern-secondary,
+  .btn-modern-glass {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.625rem 1.25rem;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .btn-modern:active,
+  .btn-modern-primary:active,
+  .btn-modern-secondary:active,
+  .btn-modern-glass:active {
+    transform: scale(0.95);
+  }
+  
+  .btn-modern:disabled,
+  .btn-modern-primary:disabled,
+  .btn-modern-secondary:disabled,
+  .btn-modern-glass:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .btn-modern,
+    .btn-modern-primary,
+    .btn-modern-secondary,
+    .btn-modern-glass {
+      padding: 0.5rem 1rem;
+      font-size: 11px;
+    }
+  }
+
+  .btn-modern-primary {
+    background-color: var(--color-doulia-lime);
+    color: var(--color-doulia-night);
+    box-shadow: 0 10px 15px -3px rgba(190, 242, 100, 0.1);
+  }
+  
+  .btn-modern-primary:hover {
+    box-shadow: 0 20px 25px -5px rgba(190, 242, 100, 0.25);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.01);
+  }
+
+  .btn-modern-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .btn-modern-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-modern-glass {
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .btn-modern-glass:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-color: rgba(190, 242, 100, 0.3);
   }
   
   .glow-neon {
@@ -147,6 +242,56 @@
 @keyframes scanline {
   0% { bottom: 100%; }
   100% { bottom: -100%; }
+}
+
+@media print {
+  .no-print, 
+  button, 
+  nav,
+  .scanline, 
+  .particle, 
+  .grid-pattern {
+    display: none !important;
+  }
+  
+  body, .bg-doulia-night {
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+  
+  .glass-panel {
+    background: white !important;
+    border: 1px solid #eee !important;
+    box-shadow: none !important;
+    color: black !important;
+  }
+  
+  .text-white, .text-white\/60, .text-white\/40, .text-white\/50 {
+    color: black !important;
+  }
+  
+  .ai-gradient-text, .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+    font-weight: bold !important;
+  }
+  
+  .bg-white\/5, .bg-white\/10 {
+    background: #f9f9f9 !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  .fixed {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  .flex-1 {
+    overflow: visible !important;
+  }
 }
 
 @keyframes float {

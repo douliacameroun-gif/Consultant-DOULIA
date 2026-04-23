@@ -112,17 +112,17 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
       </div>
 
       <div className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
-        <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
+        <div className="max-w-5xl mx-auto section-compact">
+          <div className="text-center mb-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-2xl sm:text-4xl font-display font-bold text-doulia-lime mb-3 uppercase tracking-tight">
+              <h1 className="mb-2 italic">
                 Simulateur de Gains IA
               </h1>
-              <p className="text-white/60 text-base max-w-xl mx-auto">
+              <p className="text-white/50 text-sm max-w-xl mx-auto">
                 Estimez l'impact concret de l'Intelligence Artificielle sur votre rentabilité.
               </p>
             </motion.div>
@@ -296,10 +296,10 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                 </p>
                 <button 
                   onClick={() => { onClose(); onOpenAudit(); }}
-                  className="w-full py-4 bg-doulia-night text-white rounded-xl font-bold flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-xl text-base"
+                  className="btn-modern bg-doulia-night text-white w-full border-none shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
                 >
                   Lancer mon Audit Gratuit
-                  <ArrowRight size={20} />
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </motion.div>
