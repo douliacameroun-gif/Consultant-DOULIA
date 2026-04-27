@@ -366,7 +366,7 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
       <div className="p-6 border-t border-white/5 bg-black/20 flex items-center justify-center gap-4">
         <div className="flex items-center gap-2 text-white/30 text-[10px] font-bold uppercase tracking-widest">
           <Zap size={12} />
-          Powered by DOULIA AI Vision
+          Powered by DOULIA
         </div>
       </div>
     </div>

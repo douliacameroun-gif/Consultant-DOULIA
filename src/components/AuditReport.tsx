@@ -324,7 +324,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-12 border-t border-white/5 pb-12">
             <div className="flex items-center gap-4 text-white/30 text-[10px] uppercase font-bold tracking-widest">
                <ShieldCheck size={14} />
-               Rapport Certifié DOULIA AI Vision
+               Rapport Certifié DOULIA
             </div>
             <div className="flex gap-4">
                <button 

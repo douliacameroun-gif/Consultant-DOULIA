@@ -455,36 +455,36 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                className="sm:hidden absolute top-20 left-4 right-4 z-[100] bg-doulia-night/98 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+                className="sm:hidden absolute top-16 left-8 right-8 z-[100] bg-doulia-night/98 backdrop-blur-2xl p-4 rounded-[1.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
               >
-                <div className="flex flex-col gap-3">
-                  <div className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-2 ml-2">Navigation</div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-[9px] text-white/30 uppercase tracking-[0.2em] font-bold mb-1 ml-2">Navigation</div>
                   
                   <button 
                     onClick={() => { setShowROI(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-4 text-base font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-4 group"
+                    className="w-full text-left p-2.5 text-sm font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-3 group"
                   >
-                    <div className="p-2 bg-doulia-lime/20 rounded-lg text-doulia-lime">
-                      <TrendingUp size={20} />
+                    <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
+                      <TrendingUp size={18} />
                     </div>
                     <span className="flex-1">Simulateur de Gains</span>
-                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
                   <button 
                     onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-4 text-base font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-4 group"
+                    className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
-                    <div className="p-2 bg-doulia-lime/10 rounded-lg text-doulia-lime">
-                      <Layers size={20} />
+                    <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
+                      <Layers size={18} />
                     </div>
                     <span className="flex-1">Nos Solutions</span>
-                    <ArrowRight size={18} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
                   <button 
                     onClick={() => { setShowContact(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
+                    className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-accent-blue/10 rounded-lg text-doulia-accent-blue">
                       <Phone size={18} />
@@ -495,7 +495,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
 
                   <button 
                     onClick={() => { setShowAbout(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
+                    className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
                       <HelpCircle size={18} />
@@ -507,19 +507,19 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   {/* Bouton Effacer Historique déplacé dans le menu */}
                   <button 
                     onClick={() => { clearHistory(); setIsMenuOpen(false); }}
-                    className="w-full text-left p-3 text-[13px] font-bold text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-3"
+                    className="w-full text-left p-2.5 text-[12px] font-bold text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-3"
                   >
                     <div className="p-1.5 bg-red-500/10 rounded-lg">
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </div>
                     <span className="flex-1">Effacer l'historique</span>
                   </button>
 
-                  <div className="mt-2 pt-4 border-t border-white/10 flex justify-between items-center">
-                    <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest">© DOULIA 2026</p>
+                  <div className="mt-1 pt-3 border-t border-white/10 flex justify-between items-center">
+                    <p className="text-[8px] text-white/20 font-bold uppercase tracking-widest">© DOULIA 2026</p>
                     <button 
                       onClick={() => setIsMenuOpen(false)}
-                      className="text-doulia-lime text-[10px] font-bold uppercase tracking-widest"
+                      className="text-doulia-lime text-[9px] font-bold uppercase tracking-widest"
                     >
                       Fermer
                     </button>
