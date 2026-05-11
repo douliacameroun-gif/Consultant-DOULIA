@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Mic,
@@ -18,13 +18,28 @@ import {
   Trash2,
   TrendingUp,
   Volume2,
-  VolumeX
+  VolumeX,
+  MessageCircle,
+  Download,
+  BarChart3
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getGeminiResponse, saveAuditToAirtable } from './services/gemini';
+import { useDouliaSounds } from './hooks/useDouliaSounds';
+import { offlineService } from './services/offlineService';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import AuditForm, { AuditData } from './components/AuditForm';
+import Dashboard from './components/Dashboard';
+
+// Mock ROI results type
+interface ROIResults {
+  monthlyTimeSaved: number;
+  monthlyMoneySaved: number;
+  recoveredRevenue: number;
+  totalMonthlyGain: number;
+  yearlyGain: number;
+}
 import AuditReport from './components/AuditReport';
 import SolutionsPage from './components/SolutionsPage';
 import ContactPage from './components/ContactPage';
@@ -97,6 +112,7 @@ const ParticleBackground = () => {
 const STORAGE_KEY = 'doulia_chat_history';
 
 export default function App() {
+  const { playClick, playPop, playWoosh, playSuccess } = useDouliaSounds();
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -126,6 +142,8 @@ export default function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showROI, setShowROI] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [lastROIResults, setLastROIResults] = useState<ROIResults | null>(null);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [submittedAuditData, setSubmittedAuditData] = useState<AuditData | null>(null);
   const [isAuditCompleted, setIsAuditCompleted] = useState<boolean>(() => {
@@ -134,6 +152,73 @@ export default function App() {
     }
     return false;
   });
+  const [isOnline, setIsOnline] = useState(true);
+  const [pendingSyncCount, setPendingSyncCount] = useState(0);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  const updateSyncStatus = useCallback(() => {
+    setPendingSyncCount(offlineService.getQueueLength());
+  }, []);
+
+  // Synchronisation hors-ligne et PWA
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    const handleOnline = async () => {
+      setIsOnline(true);
+      await offlineService.syncNow();
+      updateSyncStatus();
+    };
+    const handleOffline = () => setIsOnline(false);
+    
+    // Supprimer les erreurs WebSocket/Vite HMR intrusives (bénignes dans cet environnement)
+    const handleGlobalError = (event: ErrorEvent) => {
+      if (event.message?.includes('WebSocket') || event.message?.includes('vite')) {
+        event.preventDefault();
+      }
+    };
+    
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      if (event.reason?.message?.includes('WebSocket') || event.reason?.message?.includes('vite')) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleRejection);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    setIsOnline(navigator.onLine);
+    updateSyncStatus();
+
+    // Tentative de sync périodique si on est en ligne
+    const syncInterval = setInterval(async () => {
+      if (navigator.onLine) {
+        await offlineService.syncNow();
+        updateSyncStatus();
+      }
+    }, 15000); // Toutes les 15 secondes
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      clearInterval(syncInterval);
+    };
+  }, [updateSyncStatus]);
+
+  const toggleVoice = () => {
+    playClick();
+    setIsVoiceEnabled(!isVoiceEnabled);
+  };
 
   const speak = (text: string) => {
     if (!isVoiceEnabled || !window.speechSynthesis) return;
@@ -225,6 +310,7 @@ export default function App() {
   }, []);
 
   const toggleListening = () => {
+    playClick();
     if (isListening) {
       isListeningRef.current = false;
       setIsListening(false);
@@ -265,6 +351,29 @@ export default function App() {
     }
   };
 
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    }
+    setDeferredPrompt(null);
+    setIsMenuOpen(false);
+  };
+
+  const transferToWhatsApp = () => {
+    const chatHistory = messages
+      .map(m => `${m.role === 'user' ? 'Client' : 'DOULIA'}: ${m.content}`)
+      .join('\n\n');
+    
+    const summary = messages.length > 2 ? messages[messages.length - 1].content.substring(0, 100) + '...' : 'Nouveau besoin';
+    const encodedHistory = encodeURIComponent(`Bonjour Doulia, voici le résumé de ma discussion avec l'IA :\n\n${chatHistory}`);
+    
+    window.open(`https://wa.me/237673043127?text=${encodedHistory}`, '_blank');
+    setIsMenuOpen(false);
+  };
+
   const handleSend = async (customMessage?: string, isRetry = false) => {
     const userMessage = customMessage || input.trim();
     if (!userMessage || (isLoading && !isRetry)) return;
@@ -279,6 +388,7 @@ export default function App() {
     if (!isRetry) {
       if (!customMessage) setInput('');
       setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+      playWoosh();
     }
     
     setIsLoading(true);
@@ -294,6 +404,8 @@ export default function App() {
       const hasPassedAudit = isAuditCompleted || !!submittedAuditData;
       
       const response = await getGeminiResponse(userMessage, history, visitorId, conversationId, hasPassedAudit);
+      updateSyncStatus();
+      playPop();
       setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
       if (response) speak(response);
     } catch (err: any) {
@@ -306,11 +418,13 @@ export default function App() {
   };
 
   const handleSelectSolution = (solutionName: string) => {
+    playClick();
     setShowSolutions(false);
     handleSend(`Je souhaite en savoir plus sur la solution __${solutionName}__. Pouvez-vous m'expliquer comment cela peut aider mon entreprise ?`);
   };
 
   const handleNavigate = (page: 'home' | 'solutions' | 'audit') => {
+    playClick();
     setShowContact(false);
     if (page === 'home') {
       setShowSolutions(false);
@@ -325,6 +439,7 @@ export default function App() {
   };
 
   const openAudit = (code: string | null = null) => {
+    playClick();
     setResumeCode(code);
     setShowTypeform(true);
   };
@@ -333,6 +448,7 @@ export default function App() {
     setShowTypeform(false);
     setSubmittedAuditData(data);
     setIsAuditCompleted(true);
+    playSuccess();
     localStorage.setItem('doulia_audit_completed', 'true');
     
     const summary = `Merci **${data.name}** ! J'ai bien reçu les informations pour **${data.company}**. 
@@ -349,6 +465,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
 
     // Save to Airtable
     await saveAuditToAirtable(data, visitorId);
+    updateSyncStatus();
   };
 
   const openExternalLink = (url: string) => {
@@ -389,8 +506,13 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
               <div className="flex flex-col justify-center">
                 <span className="font-display font-bold text-lg sm:text-lg text-white tracking-tight leading-none mb-1 sm:mb-1">DOULIA</span>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1 h-1 bg-doulia-lime rounded-full animate-pulse"></div>
-                  <p className="text-[9px] sm:text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">Système Actif</p>
+                  <div className={cn(
+                    "w-1 h-1 rounded-full animate-pulse",
+                    isOnline ? "bg-doulia-lime shadow-[0_0_10px_#bef264]" : "bg-red-500 shadow-[0_0_10px_#ef4444]"
+                  )}></div>
+                  <p className="text-[9px] sm:text-[9px] text-white/40 font-bold uppercase tracking-widest leading-none">
+                    {isOnline ? (pendingSyncCount > 0 ? `Synchronisation (${pendingSyncCount})...` : "Système Actif") : "Connexion Instable (Mode Offline)"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -422,7 +544,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
               </button>
 
               <button 
-                onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+                onClick={toggleVoice}
                 title={isVoiceEnabled ? "Désactiver la voix" : "Activer la voix (TTS)"}
                 className={cn(
                     "hidden sm:flex p-2 rounded-lg transition-all border border-white/5",
@@ -434,7 +556,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
               
               {/* Bouton Audit mis en perspective (Call to Action) */}
               <button 
-                onClick={() => openAudit()}
+                onClick={() => { playClick(); openAudit(); }}
                 className="btn-modern-primary animate-[pulse_4s_ease-in-out_infinite]"
               >
                 <Activity size={14} className="animate-bounce" />
@@ -442,7 +564,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                 <span className="xs:hidden">Audit</span>
               </button>
 
-              <button className="sm:hidden p-1 text-white/80" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              <button className="sm:hidden p-1 text-white/80" onClick={() => { playClick(); setIsMenuOpen(!isMenuOpen); }}>
                 {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
               </button>
             </div>
@@ -461,7 +583,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   <div className="text-[9px] text-white/30 uppercase tracking-[0.2em] font-bold mb-1 ml-2">Navigation</div>
                   
                   <button 
-                    onClick={() => { setShowROI(true); setIsMenuOpen(false); }}
+                    onClick={() => { playClick(); setShowROI(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-2.5 text-sm font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
@@ -472,7 +594,18 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   </button>
 
                   <button 
-                    onClick={() => { setShowSolutions(true); setIsMenuOpen(false); }}
+                    onClick={() => { playClick(); setShowDashboard(true); setIsMenuOpen(false); }}
+                    className="w-full text-left p-2.5 text-sm font-bold text-doulia-accent-blue bg-doulia-accent-blue/5 border border-doulia-accent-blue/20 rounded-xl transition-all flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 bg-doulia-accent-blue/20 rounded-lg text-doulia-accent-blue">
+                      <BarChart3 size={18} />
+                    </div>
+                    <span className="flex-1">DOULIA Insight (Dashboard)</span>
+                    <ArrowRight size={16} className="text-doulia-accent-blue opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+
+                  <button 
+                    onClick={() => { playClick(); setShowSolutions(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
@@ -483,7 +616,18 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   </button>
 
                   <button 
-                    onClick={() => { setShowContact(true); setIsMenuOpen(false); }}
+                    onClick={transferToWhatsApp}
+                    className="w-full text-left p-2.5 text-sm font-bold text-[#25D366] bg-[#25D366]/5 border border-[#25D366]/20 rounded-xl transition-all flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 bg-[#25D366]/20 rounded-lg text-[#25D366]">
+                      <MessageCircle size={18} />
+                    </div>
+                    <span className="flex-1">Continuer sur WhatsApp</span>
+                    <ArrowRight size={16} className="text-[#25D366] opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+
+                  <button 
+                    onClick={() => { playClick(); setShowContact(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-accent-blue/10 rounded-lg text-doulia-accent-blue">
@@ -494,7 +638,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   </button>
 
                   <button 
-                    onClick={() => { setShowAbout(true); setIsMenuOpen(false); }}
+                    onClick={() => { playClick(); setShowAbout(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
                     <div className="p-1.5 bg-doulia-lime/10 rounded-lg text-doulia-lime">
@@ -503,6 +647,19 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                     <span className="flex-1">À Propos & FAQ</span>
                     <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
+
+                  {deferredPrompt && (
+                    <button 
+                      onClick={handleInstall}
+                      className="w-full text-left p-2.5 text-sm font-bold text-doulia-lime bg-doulia-lime/5 border border-doulia-lime/20 rounded-xl transition-all flex items-center gap-3 group"
+                    >
+                      <div className="p-1.5 bg-doulia-lime/20 rounded-lg text-doulia-lime">
+                        <Download size={18} />
+                      </div>
+                      <span className="flex-1">Installer l'Application</span>
+                      <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                    </button>
+                  )}
                   
                   {/* Bouton Effacer Historique déplacé dans le menu */}
                   <button 
@@ -678,6 +835,30 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
           <div className="p-2.5 sm:p-4 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
             <div className="relative flex items-end gap-2">
               <div className="flex-1 relative group">
+                <AnimatePresence>
+                  {isListening && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                      className="absolute -top-12 left-0 right-0 flex justify-center pointer-events-none"
+                    >
+                      <div className="bg-doulia-lime/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 shadow-[0_0_20px_rgba(190,242,100,0.4)]">
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((i) => (
+                            <motion.div
+                              key={i}
+                              animate={{ height: [4, 12, 4] }}
+                              transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.1 }}
+                              className="w-1 bg-doulia-night rounded-full"
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-bold text-doulia-night uppercase tracking-wider">DOULIA Voice active</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <textarea
                   value={input}
                   onChange={(e) => {
@@ -691,7 +872,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                       handleSend();
                     }
                   }}
-                  placeholder="Posez votre question à DOULIA..."
+                  placeholder={isListening ? "Parlez maintenant..." : "Posez votre question à DOULIA..."}
                   rows={1}
                   className="w-full bg-white/5 border border-white/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-[12px] sm:text-sm text-white placeholder:text-white/30 placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis focus:outline-none focus:border-doulia-lime/50 transition-all resize-none min-h-[40px] max-h-[150px] overflow-y-auto"
                   disabled={isLoading}
@@ -726,28 +907,39 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
       <AnimatePresence>
         {showSolutions && (
           <SolutionsPage 
-            onClose={() => setShowSolutions(false)} 
+            onClose={() => { playClick(); setShowSolutions(false); }} 
             onSelectSolution={handleSelectSolution}
           />
         )}
         {showContact && (
           <ContactPage 
-            onClose={() => setShowContact(false)} 
+            onClose={() => { playClick(); setShowContact(false); }} 
             lang="fr"
             onNavigate={handleNavigate}
             onOpenExternal={openExternalLink}
           />
         )}
         {showAbout && (
-          <AboutFAQPage onClose={() => setShowAbout(false)} />
+          <AboutFAQPage onClose={() => { playClick(); setShowAbout(false); }} />
         )}
         {showROI && (
-          <ROISimulator onClose={() => setShowROI(false)} onOpenAudit={() => openAudit()} />
+          <ROISimulator 
+            onClose={() => { playClick(); setShowROI(false); }} 
+            onOpenAudit={() => openAudit()} 
+            onUpdateResults={(res) => setLastROIResults(res)}
+          />
+        )}
+        {showDashboard && (
+          <Dashboard 
+            onClose={() => { playClick(); setShowDashboard(false); }}
+            roiResults={lastROIResults}
+            auditSubmitted={!!submittedAuditData}
+          />
         )}
         {submittedAuditData && (
           <AuditReport 
             data={submittedAuditData} 
-            onClose={() => setSubmittedAuditData(null)} 
+            onClose={() => { playClick(); setSubmittedAuditData(null); }} 
           />
         )}
         {showTypeform && (
@@ -765,7 +957,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
             >
               <div className="absolute top-6 right-6 z-50">
                 <button 
-                  onClick={() => setShowTypeform(false)}
+                  onClick={() => { playClick(); setShowTypeform(false); }}
                   className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white"
                 >
                   <X size={24} />
@@ -810,7 +1002,7 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                     <ArrowRight size={20} />
                   </a>
                   <button 
-                    onClick={() => setExternalUrl(null)}
+                    onClick={() => { playClick(); setExternalUrl(null); }}
                     className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/40 hover:text-white"
                   >
                     <X size={24} />

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import SignatureCanvas from 'react-signature-canvas';
+import { useDouliaSounds } from '../hooks/useDouliaSounds';
 import { 
   X, 
   ChevronRight, 
@@ -15,7 +17,8 @@ import {
   Zap,
   Globe,
   Smile,
-  Check
+  Check,
+  RotateCcw
 } from 'lucide-react';
 
 interface AuditFormProps {
@@ -34,6 +37,7 @@ export interface AuditData {
   description: string;
   existingTools: string;
   priority: string;
+  signature?: string;
 }
 
 const steps = [
@@ -118,14 +122,21 @@ const steps = [
       { id: 'high', text: 'Urgent (maintenant / prochain mois)', value: 'haute' }
     ],
     type: 'choice'
+  },
+  {
+    id: 'signature',
+    question: 'Pour certifier cet audit, merci d\'apposer votre signature ci-dessous :',
+    type: 'signature'
   }
 ];
 
 export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
+  const { playClick, playSuccess } = useDouliaSounds();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Partial<AuditData>>({});
   const [inputValue, setInputValue] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const sigRef = useRef<SignatureCanvas>(null);
 
   const step = steps[currentStep];
 
@@ -139,6 +150,13 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
   }, [currentStep, formData, step]);
 
   const handleNext = () => {
+    playClick();
+    if (step.id === 'signature' && sigRef.current) {
+      if (sigRef.current.isEmpty()) return;
+      const signatureData = sigRef.current.getTrimmedCanvas().toDataURL('image/png');
+      setFormData(prev => ({ ...prev, signature: signatureData }));
+    }
+
     if (step.type === 'text' || step.type === 'tel' || step.type === 'textarea') {
       if (!inputValue.trim()) return;
       setFormData(prev => ({ ...prev, [step.id]: inputValue }));
@@ -153,12 +171,14 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
   };
 
   const handlePrev = () => {
+    playClick();
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
     }
   };
 
   const handleChoice = (value: string) => {
+    playClick();
     setFormData(prev => ({ ...prev, [step.id]: value }));
     setTimeout(() => {
       if (currentStep < steps.length - 1) {
@@ -355,6 +375,51 @@ export default function AuditForm({ onClose, onSubmit }: AuditFormProps) {
                   >
                     <ChevronLeft size={18} />
                     Retour
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step.type === 'signature' && (
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <span className="text-doulia-lime font-bold tracking-widest text-[10px] uppercase">Engagement DOULIA Trust</span>
+                  <h2 className="text-lg sm:text-xl font-bold text-white leading-tight font-display">
+                    {currentQuestionText}
+                  </h2>
+                </div>
+
+                <div className="bg-white/5 border-2 border-dashed border-white/10 rounded-2xl p-2 relative">
+                  <SignatureCanvas 
+                    ref={sigRef}
+                    penColor="#bef264"
+                    canvasProps={{
+                      className: 'signature-canvas w-full h-48 sm:h-64 rounded-xl cursor-crosshair'
+                    }}
+                  />
+                  <button 
+                    onClick={() => sigRef.current?.clear()}
+                    className="absolute bottom-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/40 transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest"
+                  >
+                    <RotateCcw size={12} />
+                    Effacer
+                  </button>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <button 
+                    onClick={handlePrev}
+                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm"
+                  >
+                    <ChevronLeft size={18} />
+                    Retour
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="bg-doulia-lime text-doulia-night px-8 py-3 rounded-xl font-bold flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-doulia-lime/20"
+                  >
+                    Finaliser mon Audit
+                    <ChevronRight size={20} />
                   </button>
                 </div>
               </div>

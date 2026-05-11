@@ -30,6 +30,7 @@ import {
   BarChart3,
   Database
 } from 'lucide-react';
+import { useDouliaSounds } from '../hooks/useDouliaSounds';
 import { AuditData } from './AuditForm';
 
 interface AuditReportProps {
@@ -38,6 +39,7 @@ interface AuditReportProps {
 }
 
 const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
+  const { playClick } = useDouliaSounds();
   // Real calculations based on user data
   const stats = useMemo(() => {
     const dailyVolume = parseInt(data.volume || '20');
@@ -96,7 +98,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
 
       {/* Close Button UI */}
       <button 
-        onClick={onClose}
+        onClick={() => { playClick(); onClose(); }}
         className="fixed top-4 right-4 sm:top-8 sm:right-8 z-[130] p-2 sm:p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-white/50 hover:text-white border border-white/10 backdrop-blur-md group"
       >
         <X size={24} className="sm:hidden" />
@@ -319,6 +321,56 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
                </div>
             </div>
           </section>
+
+          {/* Signature and Certification Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="pt-12 mt-12 border-t border-white/10"
+          >
+            <div className="flex flex-col md:flex-row items-end justify-between gap-12 sm:gap-20">
+              <div className="flex-1 space-y-6">
+                 <div className="flex items-center gap-3">
+                   <ShieldCheck size={24} className="text-doulia-lime" />
+                   <h3 className="text-xl font-bold italic font-display">Certification d'Authenticité</h3>
+                 </div>
+                 <p className="text-white/40 text-sm leading-relaxed max-w-md">
+                   Ce rapport interactif a été généré par l'IA DOULIA Vision le {new Date().toLocaleDateString('fr-FR')}. 
+                   Il constitue un diagnostic préliminaire certifié pour la transformation digitale de <strong>{data.company}</strong>.
+                 </p>
+                 <div className="pt-4 flex items-center gap-6">
+                   <div className="space-y-1">
+                     <p className="text-[10px] text-white/20 uppercase font-black tracking-widest">ID Diagnostic</p>
+                     <p className="text-xs font-mono text-white/60">DX-{Math.random().toString(36).substring(2, 10).toUpperCase()}-2026</p>
+                   </div>
+                   <div className="w-px h-8 bg-white/10" />
+                   <div className="space-y-1">
+                     <p className="text-[10px] text-white/20 uppercase font-black tracking-widest">Statut</p>
+                     <p className="text-xs text-doulia-lime font-bold uppercase">Vérifié par DOULIA</p>
+                   </div>
+                 </div>
+              </div>
+
+              {data.signature && (
+                <div className="w-full md:w-64 space-y-4">
+                  <p className="text-[10px] text-white/30 uppercase font-black tracking-[0.2em] text-center md:text-left">Signature du Client</p>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-center h-32 relative group overflow-hidden">
+                    <img 
+                      src={data.signature} 
+                      alt="Signature du Client" 
+                      className="max-h-full max-w-full object-contain filter brightness-125"
+                    />
+                    <div className="absolute inset-0 bg-doulia-lime/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="text-center md:text-left">
+                    <p className="text-xs font-bold text-white">{data.name}</p>
+                    <p className="text-[10px] text-white/40">{data.company}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
 
           {/* Bottom Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-12 border-t border-white/5 pb-12">

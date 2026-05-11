@@ -1,5 +1,5 @@
 {
   "name": "DOULIA - Expert Consultant IA & Transformation Digitale",
   "description": "Leader de l'Intelligence Artificielle au Cameroun. Solutions DOULIA Connect, Process et Insight pour booster la performance des PME à Douala, Yaoundé et Kribi.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["microphone"]
 }

@@ -11,15 +11,18 @@ import {
   PieChart,
   Target,
   X,
-  Activity
+  Activity,
+  Download
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 interface ROISimulatorProps {
   onClose: () => void;
   onOpenAudit: () => void;
+  onUpdateResults?: (results: any) => void;
 }
 
-const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => {
+const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit, onUpdateResults }) => {
   const [employees, setEmployees] = useState(5);
   const [hourlyRate, setHourlyRate] = useState(2500); // FCFA
   const [repetitiveHours, setRepetitiveHours] = useState(2);
@@ -33,6 +36,77 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
     totalMonthlyGain: 0,
     yearlyGain: 0
   });
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const primaryColor = '#bef264';
+    
+    // Header
+    doc.setFillColor(20, 20, 20);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setFontSize(22);
+    doc.setTextColor(190, 242, 100); // doulia-lime
+    doc.text('RAPPORT ROI - DOULIA AI', 20, 25);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(200, 200, 200);
+    doc.text(`Généré le : ${new Date().toLocaleDateString('fr-FR')}`, 190, 25, { align: 'right' });
+
+    // Section 1: Inputs
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(16);
+    doc.text('VOS DONNÉES ACTUELLES', 20, 60);
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 65, 190, 65);
+
+    doc.setFontSize(11);
+    doc.text(`Nombre d'employés : ${employees}`, 20, 75);
+    doc.text(`Coût horaire moyen : ${formatCurrency(hourlyRate)}`, 20, 83);
+    doc.text(`Heures répétitives par jour / employé : ${repetitiveHours}h`, 20, 91);
+    doc.text(`Prospects perdus par mois : ${missedLeads}`, 20, 99);
+    doc.text(`Valeur moyenne d'un prospect : ${formatCurrency(leadValue)}`, 20, 107);
+
+    // Section 2: Results
+    doc.setFontSize(16);
+    doc.text('POTENTIEL DE GAIN AVEC DOULIA', 20, 130);
+    doc.setDrawColor(190, 242, 100);
+    doc.line(20, 135, 190, 135);
+    
+    doc.setFontSize(24);
+    doc.setTextColor(16, 185, 129); // Emerald
+    doc.text(`GAIN ANNUEL : ${formatCurrency(results.yearlyGain)}`, 20, 150);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(30, 30, 30);
+    doc.text(`Gain Mensuel Total : ${formatCurrency(results.totalMonthlyGain)}`, 20, 165);
+    
+    doc.setFontSize(11);
+    doc.text(`- Économies sur le temps libéré : ${formatCurrency(results.monthlyMoneySaved)} / mois`, 25, 175);
+    doc.text(`- Revenus récupérés (via DOULIA Connect) : ${formatCurrency(results.recoveredRevenue)} / mois`, 25, 183);
+    doc.text(`- Temps libéré pour votre équipe : ${results.monthlyTimeSaved} heures / mois`, 25, 191);
+
+    // Section 3: Solutions
+    doc.setFontSize(14);
+    doc.setTextColor(30, 30, 30);
+    doc.text('SOLUTIONS RECOMMANDÉES', 20, 215);
+    
+    doc.setFontSize(10);
+    doc.text('1. DOULIA Connect : Automatisation du support client WhatsApp.', 20, 225);
+    doc.text('2. DOULIA Process : Automatisation des tâches administratives répétitives.', 20, 233);
+    doc.text('3. DOULIA Insight : Dashboards et analyse de données prédictives.', 20, 241);
+
+    // Footer
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 270, 190, 270);
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Expertise IA & Transformation Digitale au Cameroun', 105, 278, { align: 'center' });
+    doc.text('www.doulia.cm | contact@doulia.cm | DOUALA', 105, 284, { align: 'center' });
+
+    doc.save(`Rapport_ROI_DOULIA_${Date.now()}.pdf`);
+  };
 
   useEffect(() => {
     const monthlyTimeSaved = employees * repetitiveHours * 20; // 20 working days
@@ -48,7 +122,14 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
       totalMonthlyGain,
       yearlyGain
     });
-  }, [employees, hourlyRate, repetitiveHours, missedLeads, leadValue]);
+    onUpdateResults?.({
+      monthlyTimeSaved,
+      monthlyMoneySaved,
+      recoveredRevenue,
+      totalMonthlyGain,
+      yearlyGain
+    });
+  }, [employees, hourlyRate, repetitiveHours, missedLeads, leadValue, onUpdateResults]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('fr-FR').format(value) + ' FCFA';
@@ -294,13 +375,22 @@ const ROISimulator: React.FC<ROISimulatorProps> = ({ onClose, onOpenAudit }) => 
                 <p className="text-xs text-doulia-night/80 mb-4 font-medium">
                   Nos experts valident ces estimations gratuitement.
                 </p>
-                <button 
-                  onClick={() => { onClose(); onOpenAudit(); }}
-                  className="btn-modern bg-doulia-night text-white w-full border-none shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-                >
-                  Lancer mon Audit Gratuit
-                  <ArrowRight size={16} />
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={() => { onClose(); onOpenAudit(); }}
+                    className="btn-modern bg-doulia-night text-white w-full border-none shadow-[0_4px_20px_rgba(0,0,0,0.5)] h-12"
+                  >
+                    Lancer mon Audit Gratuit
+                    <ArrowRight size={16} />
+                  </button>
+                  <button 
+                    onClick={downloadPDF}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white/20 hover:bg-white/30 transition-all font-bold text-sm border border-white/10"
+                  >
+                    <Download size={16} />
+                    Télécharger le Rapport PDF
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

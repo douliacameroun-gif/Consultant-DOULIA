@@ -6,6 +6,33 @@
     
     <title>DOULIA | Expert Consultant IA & Transformation Digitale au Cameroun</title>
     
+    <script>
+      // Suppression des erreurs WebSocket Vite bénignes
+      (function() {
+        const suppress = [
+          'WebSocket connection to',
+          '[vite] failed to connect to websocket',
+          'WebSocket closed without opened'
+        ];
+        const originalError = console.error;
+        console.error = function(...args) {
+          if (typeof args[0] === 'string' && suppress.some(s => args[0].includes(s))) return;
+          originalError.apply(console, args);
+        };
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+          if (typeof args[0] === 'string' && suppress.some(s => args[0].includes(s))) return;
+          originalWarn.apply(console, args);
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event.reason && suppress.some(s => String(event.reason.message || event.reason).includes(s))) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    
     <link rel="icon" type="image/png" href="https://i.postimg.cc/LsPpGcLD/LOGO_DOULIA_OFFICIEL_fond_blanc.png" />
     <link rel="apple-touch-icon" href="https://i.postimg.cc/LsPpGcLD/LOGO_DOULIA_OFFICIEL_fond_blanc.png" />
     

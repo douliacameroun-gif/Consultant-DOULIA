@@ -405,6 +405,7 @@ app.post("/api/audit", async (req, res) => {
           "Volume de messages": parseInt(auditData.volume || "0"),
           "Priorité": auditData.priority === 'haute' ? 'Haute' : 
                       auditData.priority === 'moyenne' ? 'Moyenne' : 'Basse',
+          "Signature": auditData.signature || "",
           "Date de soumission": new Date().toISOString().split('T')[0]
         });
 
