@@ -60,6 +60,17 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
     };
   }, [data.volume]);
 
+  const recommendedProduct = useMemo(() => {
+    switch (data.challenge) {
+      case 'service_client': return 'Doulia Connect';
+      case 'admin': return 'Doulia Process';
+      case 'archive': return 'Doulia Archive';
+      case 'survey': return 'Doulia Survey AI';
+      case 'data': return 'Doulia Insight';
+      default: return 'Doulia Sur-Mesure';
+    }
+  }, [data.challenge]);
+
   const chartData = [
     { name: 'Actuel', temps: stats.currentWeeklyHours, color: '#ff4444' },
     { name: 'DOULIA AI', temps: stats.aiWeeklyHours, color: '#bef264' },
@@ -76,8 +87,25 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[120] bg-doulia-night flex flex-col overflow-hidden"
+      className="fixed inset-0 z-[120] bg-doulia-night flex flex-col overflow-hidden print:static print:bg-white print:text-black"
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          .glass-panel { background: white !important; border: 1px solid #eee !important; color: black !important; box-shadow: none !important; }
+          .text-white\/40, .text-white\/50, .text-white\/60 { color: #666 !important; }
+          .text-white { color: black !important; }
+          .bg-doulia-night, .bg-doulia-dark { background: white !important; }
+          .btn-modern-primary, .fixed, .absolute, .scanline { display: none !important; }
+          .print\:block { display: block !important; }
+          .print\:hidden { display: none !important; }
+          body { background: white !important; }
+          h1, h2, h3, h4 { color: black !important; }
+          .ai-gradient-text { background: none !important; -webkit-text-fill-color: black !important; color: black !important; font-weight: bold !important; }
+          .custom-scrollbar { overflow: visible !important; }
+          .max-w-6xl { max-width: 100% !important; margin: 0 !important; width: 100% !important; }
+          svg, .recharts-surface { filter: grayscale(1) !important; }
+        }
+      `}} />
       {/* Animated Orbits */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,_#bef26422,_transparent_50%)]"></div>
@@ -112,14 +140,30 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
         <div className="max-w-6xl mx-auto px-4 py-8 sm:py-16 space-y-12 sm:space-y-20">
           
           {/* Header Section */}
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-8 print:space-y-4">
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
+              className="flex justify-center mb-4"
+            >
+              <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white p-2 rounded-2xl shadow-2xl border border-white/10 group overflow-hidden">
+                <img 
+                  src="https://i.postimg.cc/YqJvRTct/Gemini-Generated-Image-xo1igjxo1igjxo1i.png" 
+                  alt="DOULIA LOGO" 
+                  className="w-full h-full object-cover rounded-xl"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
               className="inline-flex items-center gap-2 p-1.5 px-4 bg-white/5 backdrop-blur-xl rounded-full border border-white/10"
             >
                <Sparkles size={14} className="text-doulia-lime animate-pulse" />
-               <p className="text-[10px] font-black text-white uppercase tracking-[0.3em]">IA Strategy Engine v3.0</p>
+               <p className="text-[10px] font-black text-white uppercase tracking-[0.3em]">IA Strategy Engine v4.0 PRO</p>
             </motion.div>
             
             <motion.h1 
@@ -284,7 +328,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
                   <div className="space-y-6">
                      <p className="text-lg text-white/80 leading-relaxed">
                         Pour <span className="text-white font-bold">{data.company}</span>, notre moteur d'analyse préconise une approche axée sur 
-                        <span className="text-doulia-lime font-bold"> {data.challenge === 'service_client' ? 'Doulia Connect' : 'Doulia Process'}</span>.
+                        <span className="text-doulia-lime font-bold"> {recommendedProduct}</span>.
                      </p>
 
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

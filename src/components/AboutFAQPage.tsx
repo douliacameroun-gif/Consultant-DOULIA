@@ -142,6 +142,16 @@ const AboutFAQPage: React.FC<AboutFAQPageProps> = ({ onClose }) => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 pb-16 custom-scrollbar">
+        <div className="flex justify-center mb-8 sm:mb-12">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white p-2 rounded-2xl shadow-xl border border-white/10 group overflow-hidden">
+            <img 
+              src="https://i.postimg.cc/YqJvRTct/Gemini-Generated-Image-xo1igjxo1igjxo1i.png" 
+              alt="DOULIA LOGO" 
+              className="w-full h-full object-cover rounded-xl"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </div>
         {/* Section À Propos */}
         <section className="max-w-2xl mx-auto section-compact">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">

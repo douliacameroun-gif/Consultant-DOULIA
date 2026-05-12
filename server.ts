@@ -118,12 +118,25 @@ Ton ton est ultra-professionnel, visionnaire, et profondément ancré dans le pr
 [VOTRE MISSION]
 Transformer les défis des entrepreneurs en opportunités de croissance exponentielle grâce à l'IA. Tu ne vends pas juste des outils, tu construis le futur des entreprises camerounaises.
 
-[SOLUTION PHARE : DOULIA_MED]
-Solution d'Excellence Médicale destinée aux dirigeants d'établissements de santé à Douala.
-❶ DIRECTION (DOULIA Insight) : Traçabilité financière totale, Intelligence prédictive (stocks/personnel), Tableaux de bord mobiles.
-❷ PERSONNEL (DOULIA Process) : Copilote Clinique IA (aide au diagnostic, notes), Liaison "Total Connect" (zéro papier), stock automatisé.
-❸ PATIENTS (DOULIA Love) : Suivi WhatsApp automatisé 24h/48h après consultation, Dossier Médical Sécurisé.
-❹ MARQUE : Community Manager IA (posts de prévention basés sur les données réelles).
+[CONNAISSANCE DE L'APPLICATION]
+L'application dispose de plusieurs onglets et outils que tu peux suggérer :
+❶ __Simulateur ROI__ : Pour calculer les gains financiers et le temps économisé.
+❷ __Audit IA__ : Un formulaire structuré pour obtenir un rapport d'expertise.
+❸ __Solutions__ : Une page présentant nos offres détaillées (Connect, Process, Archive, Survey, Sur-mesure).
+❹ __Contact__ : Nos coordonnées directes.
+
+[INTÉGRATION AUDIT - CRITIQUE]
+1. Si l'utilisateur exprime ses besoins, essaie de récolter discrètement : son __Prénom/Nom__, son __Entreprise__, son __Numéro WhatsApp__, son __Défi majeur__ (service_client, admin, archive, survey) et une __Description__ de son problème.
+2. Si tu as toutes ces informations, utilise la fonction completeAudit pour générer automatiquement son rapport d'audit sans qu'il n'ait à remplir le formulaire.
+3. Une fois l'audit complété via la fonction, informe l'utilisateur qu'il peut désormais __voir son rapport d'audit détaillé__ sur son écran ou le __télécharger en PDF__.
+4. Si l'audit est déjà marqué comme réalisé (hasPassedAudit est vrai), félicite-le et approfondis le conseil technique.
+
+[CATALOGUE DES SOLUTIONS DOULIA]
+❶ DOULIA Connect : Automatisation service client 24/7 (WhatsApp, Web).
+❷ DOULIA Process : Automatisation des tâches administratives et agents IA.
+❸ DOULIA Archive : Numérisation intelligente et Gestion Électronique de Documents (GED).
+❹ DOULIA Survey AI : Collecte de données spécialisée et enquêtes clients assistées par IA.
+❺ DOULIA Sur-mesure : Audits IA, formations, ERP, CRM et développement logiciel.
 
 [GESTION DES RECHERCHES - TAVILY]
 Tu as accès à une recherche web via Tavily. Utilise-la EXCLUSIVEMENT quand l'utilisateur demande des actualités récentes ou des données de marché spécifiques. Synthétise toujours l'information.
@@ -214,17 +227,38 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
       config: {
         systemInstruction: dynamicInstruction,
         tools: [{
-          functionDeclarations: [{
-            name: "searchWeb",
-            description: "Recherche sur le web pour obtenir des informations récentes sur le marché camerounais ou l'IA.",
-            parameters: {
-              type: Type.OBJECT,
-              properties: {
-                query: { type: Type.STRING }
-              },
-              required: ["query"]
+          functionDeclarations: [
+            {
+              name: "searchWeb",
+              description: "Recherche sur le web pour obtenir des informations récentes sur le marché camerounais ou l'IA.",
+              parameters: {
+                type: Type.OBJECT,
+                properties: {
+                  query: { type: Type.STRING }
+                },
+                required: ["query"]
+              }
+            },
+            {
+              name: "completeAudit",
+              description: "Génère automatiquement un rapport d'audit IA lorsque toutes les informations nécessaires ont été collectées pendant la discussion.",
+              parameters: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING, description: "Nom et prénom du client" },
+                  company: { type: Type.STRING, description: "Nom de l'entreprise" },
+                  whatsapp: { type: Type.STRING, description: "Numéro de téléphone WhatsApp" },
+                  challenge: { 
+                    type: Type.STRING, 
+                    description: "Le défi majeur identifié",
+                    enum: ["service_client", "admin", "archive", "survey", "data", "dev"]
+                  },
+                  description: { type: Type.STRING, description: "Description détaillée du besoin ou du problème" }
+                },
+                required: ["name", "company", "whatsapp", "challenge", "description"]
+              }
             }
-          }]
+          ]
         }],
       },
       history: formattedHistory
@@ -235,23 +269,44 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
     let aiText = result.text || "";
     console.log(`[IA] Réponse reçue (${aiText.length} chars)`);
 
-    // Gérer les appels de fonction (Tavily)
+    // Gérer les appels de fonction (Tavily et completeAudit)
     const calls = result.functionCalls;
+    let autoAuditData = null;
+
     if (calls && calls.length > 0) {
-      console.log(`[IA] Appel de fonction détecté : ${calls[0].name}`);
-      const toolResponse = await searchWeb(calls[0].args.query as string);
-      
-      const secondResult = await chat.sendMessage({
-        message: [
-          {
-            functionResponse: {
-              name: "searchWeb",
-              response: { content: toolResponse }
-            }
-          }
-        ]
-      });
-      aiText = secondResult.text || "";
+      for (const call of calls) {
+        console.log(`[IA] Appel de fonction détecté : ${call.name}`);
+        
+        if (call.name === "searchWeb") {
+          const toolResponse = await searchWeb(call.args.query as string);
+          
+          const secondResult = await chat.sendMessage({
+            message: [
+              {
+                functionResponse: {
+                  name: "searchWeb",
+                  response: { content: toolResponse }
+                }
+              }
+            ]
+          });
+          aiText = secondResult.text || "";
+        } else if (call.name === "completeAudit") {
+          console.log("[IA] Auto-Audit complété par le chatbot !");
+          autoAuditData = call.args;
+          const secondResult = await chat.sendMessage({
+            message: [
+              {
+                functionResponse: {
+                  name: "completeAudit",
+                  response: { success: true, message: "Audit enregistré avec succès. L'utilisateur peut voir son rapport." }
+                }
+              }
+            ]
+          });
+          aiText = secondResult.text || "";
+        }
+      }
     }
 
     // Save to Airtable (Asynchronously)
@@ -340,7 +395,7 @@ Si le client demande le formulaire ou si l'audit est fini, tu DOIS :
       })();
     }
 
-    res.json({ text: aiText });
+    res.json({ text: aiText, autoAudit: autoAuditData });
   } catch (error: any) {
     console.error("❌ Chat API Error Details:", error);
     res.status(500).json({ 
@@ -399,6 +454,8 @@ app.post("/api/audit", async (req, res) => {
           "Visiteur": [visitorRecordId],
           "Défi Majeur": auditData.challenge === 'service_client' ? 'Service Client' : 
                          auditData.challenge === 'admin' ? 'Admin' : 
+                         auditData.challenge === 'archive' ? 'Archivage' :
+                         auditData.challenge === 'survey' ? 'Enquêtes' :
                          auditData.challenge === 'data' ? 'Data' : 'Sur-Mesure',
           "Description du Problème": auditData.description,
           "Logiciels Actuels": (auditData.software || auditData.existingTools || "").substring(0, 250),
@@ -413,6 +470,8 @@ app.post("/api/audit", async (req, res) => {
         let suggestedProduct = "";
         if (auditData.challenge === 'service_client') suggestedProduct = "Connect";
         else if (auditData.challenge === 'admin') suggestedProduct = "Process";
+        else if (auditData.challenge === 'archive') suggestedProduct = "Archive";
+        else if (auditData.challenge === 'survey') suggestedProduct = "Survey AI";
         else if (auditData.challenge === 'data') suggestedProduct = "Insight";
         else suggestedProduct = "Sur-Mesure";
 

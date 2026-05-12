@@ -30,7 +30,6 @@ import { offlineService } from './services/offlineService';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import AuditForm, { AuditData } from './components/AuditForm';
-import Dashboard from './components/Dashboard';
 
 // Mock ROI results type
 interface ROIResults {
@@ -142,7 +141,6 @@ export default function App() {
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [showROI, setShowROI] = useState(false);
-  const [showDashboard, setShowDashboard] = useState(false);
   const [lastROIResults, setLastROIResults] = useState<ROIResults | null>(null);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [submittedAuditData, setSubmittedAuditData] = useState<AuditData | null>(null);
@@ -403,11 +401,18 @@ export default function App() {
       
       const hasPassedAudit = isAuditCompleted || !!submittedAuditData;
       
-      const response = await getGeminiResponse(userMessage, history, visitorId, conversationId, hasPassedAudit);
+      const result = await getGeminiResponse(userMessage, history, visitorId, conversationId, hasPassedAudit);
       updateSyncStatus();
       playPop();
-      setMessages(prev => [...prev, { role: 'model', content: response || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?" }]);
-      if (response) speak(response);
+      
+      const responseText = result.text || "Désolé, j'ai rencontré une petite difficulté. Pouvons-nous reprendre ?";
+      setMessages(prev => [...prev, { role: 'model', content: responseText }]);
+      if (responseText) speak(responseText);
+
+      // Handle Auto-Audit Completion
+      if (result.autoAudit) {
+        handleAuditSubmit(result.autoAudit);
+      }
     } catch (err: any) {
       console.error(err);
       setError(userMessage);
@@ -483,6 +488,31 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
       <div className="scanline" />
       <ParticleBackground />
       
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          .glass-panel { background: white !important; color: black !important; border: none !important; box-shadow: none !important; }
+          .bg-doulia-night, .bg-mesh, .scanline, .grid-pattern, .particle { display: none !important; }
+          .text-white, .text-white\/40, .text-white\/60, .text-[#f3f4f6] { color: black !important; }
+          .bg-white\/5, .bg-white\/\[0\.03\] { background: #f9f9f9 !important; border: 1px solid #eee !important; }
+          .rounded-\[2\.5rem\], .rounded-\[1\.5rem\] { border-radius: 1rem !important; }
+          .max-w-7xl { max-width: 100% !important; padding: 0 !important; }
+          .sm\:p-4, .lg\:p-6, .p-3, .sm\:p-8 { padding: 0.5rem !important; }
+          .flex-row-reverse { flex-direction: row !important; }
+          .ml-auto { margin-left: 0 !important; }
+          .mr-auto { margin-right: 0 !important; }
+          .sm\:max-w-\[80\%\] { max-width: 100% !important; }
+          button, header, footer, .sticky { display: none !important; }
+          .print-header { display: block !important; margin-bottom: 2rem !important; text-align: center; }
+          .print-logo { width: 100px; height: 100px; margin: 0 auto 1rem; display: block; }
+        }
+      `}} />
+      
+      <div className="hidden print-header print:block">
+        <img src="https://i.postimg.cc/YqJvRTct/Gemini-Generated-Image-xo1igjxo1igjxo1i.png" alt="DOULIA" className="print-logo" />
+        <h1 className="text-2xl font-bold">Rapport de Discussion DOULIA</h1>
+        <p className="text-sm text-gray-500">Généré le {new Date().toLocaleDateString('fr-FR')}</p>
+      </div>
+
       <main className="flex-1 max-w-7xl mx-auto w-full p-0 sm:p-4 lg:p-6 relative z-10 overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -493,11 +523,11 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
           <div className="p-3.5 sm:p-4 border-b border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-2xl sticky top-0 z-10">
             <div className="flex items-center gap-3 sm:gap-3">
               <div className="relative">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden border border-white/10 shadow-lg p-1">
                   <img 
-                    src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
+                    src="https://i.postimg.cc/YqJvRTct/Gemini-Generated-Image-xo1igjxo1igjxo1i.png" 
                     alt="DOULIA" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                     referrerPolicy="no-referrer"
                   />
                 </div>
@@ -594,17 +624,6 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   </button>
 
                   <button 
-                    onClick={() => { playClick(); setShowDashboard(true); setIsMenuOpen(false); }}
-                    className="w-full text-left p-2.5 text-sm font-bold text-doulia-accent-blue bg-doulia-accent-blue/5 border border-doulia-accent-blue/20 rounded-xl transition-all flex items-center gap-3 group"
-                  >
-                    <div className="p-1.5 bg-doulia-accent-blue/20 rounded-lg text-doulia-accent-blue">
-                      <BarChart3 size={18} />
-                    </div>
-                    <span className="flex-1">DOULIA Insight (Dashboard)</span>
-                    <ArrowRight size={16} className="text-doulia-accent-blue opacity-0 group-hover:opacity-100 transition-all" />
-                  </button>
-
-                  <button 
                     onClick={() => { playClick(); setShowSolutions(true); setIsMenuOpen(false); }}
                     className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
                   >
@@ -645,6 +664,17 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                       <HelpCircle size={18} />
                     </div>
                     <span className="flex-1">À Propos & FAQ</span>
+                    <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
+                  </button>
+
+                  <button 
+                    onClick={() => { window.print(); setIsMenuOpen(false); }}
+                    className="w-full text-left p-2.5 text-sm font-bold text-white hover:text-doulia-lime bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-3 group"
+                  >
+                    <div className="p-1.5 bg-white/10 rounded-lg text-white/60">
+                      <Download size={18} />
+                    </div>
+                    <span className="flex-1">Imprimer la discussion</span>
                     <ArrowRight size={16} className="text-doulia-lime opacity-0 group-hover:opacity-100 transition-all" />
                   </button>
 
@@ -702,20 +732,20 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
                   "w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden",
                   msg.role === 'user' 
                     ? "bg-doulia-lime/20 border border-doulia-lime/30 text-white" 
-                    : "bg-white"
+                    : "bg-white p-0.5"
                 )}>
                   {msg.role === 'user' ? (
                     <img 
                       src="https://i.postimg.cc/T17Zt6Dc/DOULIA_LOGO_FOND_VERT.jpg" 
                       alt="User" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-lg"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
                     <img 
-                      src="https://i.postimg.cc/Y0nJdHW3/DOULIA_LOGO.jpg" 
+                      src="https://i.postimg.cc/YqJvRTct/Gemini-Generated-Image-xo1igjxo1igjxo1i.png" 
                       alt="DOULIA" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-lg"
                       referrerPolicy="no-referrer"
                     />
                   )}
@@ -927,13 +957,6 @@ En attendant, souhaite-tu que je t'explique comment nos solutions **DOULIA** peu
             onClose={() => { playClick(); setShowROI(false); }} 
             onOpenAudit={() => openAudit()} 
             onUpdateResults={(res) => setLastROIResults(res)}
-          />
-        )}
-        {showDashboard && (
-          <Dashboard 
-            onClose={() => { playClick(); setShowDashboard(false); }}
-            roiResults={lastROIResults}
-            auditSubmitted={!!submittedAuditData}
           />
         )}
         {submittedAuditData && (

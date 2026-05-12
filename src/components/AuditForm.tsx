@@ -72,8 +72,10 @@ const steps = [
     options: [
       { id: 'A', text: 'Nous perdons trop de temps à gérer les messages clients ou les réservations.', icon: <MessageSquare size={20} />, value: 'service_client' },
       { id: 'B', text: 'Nous sommes noyés sous les tâches administratives, la paperasse et les fichiers Excel.', icon: <Layout size={20} />, value: 'admin' },
-      { id: 'C', text: 'Nous manquons de visibilité sur nos chiffres, nos stocks ou les prédictions de nos ventes.', icon: <Database size={20} />, value: 'data' },
-      { id: 'D', text: 'Nous voulons un outil sur-mesure (Site Web IA, ERP, CRM) ou former nos équipes.', icon: <Search size={20} />, value: 'dev' }
+      { id: 'C', text: 'Nous avons un volume important d\'archives physiques à numériser et sécuriser.', icon: <Database size={20} />, value: 'archive' },
+      { id: 'D', text: 'Nous voulons mieux connaître nos clients via des enquêtes et de la collecte de données IA.', icon: <ClipboardList size={20} />, value: 'survey' },
+      { id: 'E', text: 'Nous manquons de visibilité sur nos chiffres, nos stocks ou les prédictions.', icon: <Search size={20} />, value: 'data' },
+      { id: 'F', text: 'Nous voulons un outil sur-mesure (Site Web IA, ERP, CRM) ou former nos équipes.', icon: <Zap size={20} />, value: 'dev' }
     ],
     type: 'choice'
   },

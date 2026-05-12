@@ -27,14 +27,14 @@ export const getGeminiResponse = async (
     }
 
     const data = await response.json();
-    return data.text;
+    return data;
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     // Queue if it's likely a network error
     if (typeof window !== 'undefined') {
       offlineService.queueRequest('chat', payload);
     }
-    return "Oups ! La connexion semble instable. J'ai enregistré votre message localement et je le synchroniserai dès que possible. On ne vous lâche pas !";
+    return { text: "Oups ! La connexion semble instable. J'ai enregistré votre message localement et je le synchroniserai dès que possible. On ne vous lâche pas !" };
   }
 };
 

@@ -9,7 +9,9 @@ import {
   Zap,
   Target,
   Clock,
-  Shield
+  Shield,
+  Database,
+  ClipboardList
 } from 'lucide-react';
 import WhatsAppDemo from './WhatsAppDemo';
 
@@ -303,7 +305,35 @@ const SolutionsPage: React.FC<SolutionsPageProps> = ({ onClose, onSelectSolution
               <h2 className="text-lg sm:text-3xl font-display font-bold text-doulia-lime mb-2 sm:mb-3 uppercase">Services Sur-Mesure</h2>
               <p className="text-white/60 mb-6 sm:mb-10 text-xs sm:text-sm">Nous construisons votre futur écosystème IA.</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 text-left">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 text-left">
+                <div className="flex flex-col">
+                  <h4 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
+                    <Database className="text-doulia-lime" size={16} />
+                    DOULIA Archive
+                  </h4>
+                  <p className="text-[10px] sm:text-xs text-white/40 leading-relaxed mb-3 sm:mb-4">Numérisation intelligente et Archivage GED de vos documents physiques.</p>
+                  <button 
+                    onClick={() => onSelectSolution("Digitalisation & Archivage Archive")}
+                    className="mt-auto text-[9px] sm:text-[10px] font-bold text-doulia-lime border border-doulia-lime/30 px-3 py-1.5 rounded-lg hover:bg-doulia-lime hover:text-doulia-night transition-all flex items-center justify-center gap-2 group/btn"
+                  >
+                    Réserver
+                    <ChevronRight size={10} className="group-hover/btn:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
+                    <ClipboardList className="text-doulia-lime" size={16} />
+                    DOULIA Survey
+                  </h4>
+                  <p className="text-[10px] sm:text-xs text-white/40 leading-relaxed mb-3 sm:mb-4">Collecte de données terrain et enquêtes clients assistées par IA.</p>
+                  <button 
+                    onClick={() => onSelectSolution("Collecte de Données & Enquêtes Survey")}
+                    className="mt-auto text-[9px] sm:text-[10px] font-bold text-doulia-lime border border-doulia-lime/30 px-3 py-1.5 rounded-lg hover:bg-doulia-lime hover:text-doulia-night transition-all flex items-center justify-center gap-2 group/btn"
+                  >
+                    Réserver
+                    <ChevronRight size={10} className="group-hover/btn:translate-x-1 transition-transform" />
+                  </button>
+                </div>
                 <div className="flex flex-col">
                   <h4 className="text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
                     <Search className="text-doulia-lime" size={16} />
