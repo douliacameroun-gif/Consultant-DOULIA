@@ -87,25 +87,8 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[120] bg-doulia-night flex flex-col overflow-hidden print:static print:bg-white print:text-black"
+      className="fixed inset-0 z-[120] bg-doulia-night flex flex-col overflow-hidden"
     >
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          .glass-panel { background: white !important; border: 1px solid #eee !important; color: black !important; box-shadow: none !important; }
-          .text-white\/40, .text-white\/50, .text-white\/60 { color: #666 !important; }
-          .text-white { color: black !important; }
-          .bg-doulia-night, .bg-doulia-dark { background: white !important; }
-          .btn-modern-primary, .fixed, .absolute, .scanline { display: none !important; }
-          .print\:block { display: block !important; }
-          .print\:hidden { display: none !important; }
-          body { background: white !important; }
-          h1, h2, h3, h4 { color: black !important; }
-          .ai-gradient-text { background: none !important; -webkit-text-fill-color: black !important; color: black !important; font-weight: bold !important; }
-          .custom-scrollbar { overflow: visible !important; }
-          .max-w-6xl { max-width: 100% !important; margin: 0 !important; width: 100% !important; }
-          svg, .recharts-surface { filter: grayscale(1) !important; }
-        }
-      `}} />
       {/* Animated Orbits */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,_#bef26422,_transparent_50%)]"></div>
@@ -421,15 +404,6 @@ const AuditReport: React.FC<AuditReportProps> = ({ data, onClose }) => {
             <div className="flex items-center gap-4 text-white/30 text-[10px] uppercase font-bold tracking-widest">
                <ShieldCheck size={14} />
                Rapport Certifié DOULIA
-            </div>
-            <div className="flex gap-4">
-               <button 
-                onClick={() => window.print()}
-                className="p-3 bg-white/5 rounded-xl text-white/40 hover:text-white border border-white/10 transition-all flex items-center gap-2 text-xs font-bold"
-               >
-                  <Download size={16} />
-                   PDF
-               </button>
             </div>
           </div>
 
